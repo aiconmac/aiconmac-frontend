@@ -9,8 +9,6 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 
-export const runtime = 'edge';
-
 export const metadata = {
   title: 'AICON MAC MODELS - Precision in Miniature',
   description: 'Crafting intricate architectural models with unparalleled detail and artistic excellence.',
