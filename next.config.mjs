@@ -4,8 +4,9 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
-    domains: ['res.cloudinary.com'], // ✅ Allow Cloudinary images
+    unoptimized: true,
   },
 };
 
