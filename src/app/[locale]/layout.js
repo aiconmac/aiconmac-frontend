@@ -1,6 +1,5 @@
 // src/app/layout.js
 import React from 'react';
-import { Inter } from 'next/font/google';
 import '../globals.css';
 import Footer from '@/components/layout/Footer.jsx';
 import AnimatedBackground from '@/components/ui/AnimatedBackground.jsx';
@@ -10,7 +9,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 
-const inter = Inter({ subsets: ['latin'] });
+export const runtime = 'edge';
 
 export const metadata = {
   title: 'AICON MAC MODELS - Precision in Miniature',
@@ -40,7 +39,12 @@ export default async function RootLayout({ children, params }) {
 
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className={`${inter.className} min-h-screen min-w-screen relative`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+      </head>
+      <body className="font-[Inter] min-h-screen min-w-screen relative">
         <NextIntlClientProvider messages={messages}>
           <ConditionalNavbar />
           <AnimatedBackground />
