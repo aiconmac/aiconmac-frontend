@@ -4,7 +4,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Static export only for production (Cloudflare Pages). Dev mode needs middleware for i18n routing.
+  ...(process.env.NODE_ENV === 'production' ? { output: 'export' } : {}),
   images: {
     unoptimized: true,
   },

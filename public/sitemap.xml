@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://aiconmac.com/en/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://aiconmac.com/en/projects</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://aiconmac.com/en/clients</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/en/careers</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/en/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/ar/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://aiconmac.com/ar/projects</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://aiconmac.com/ar/clients</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/ar/careers</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/ar/contact</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/ru/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://aiconmac.com/ru/projects</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://aiconmac.com/ru/clients</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/ru/careers</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://aiconmac.com/ru/contact</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+</urlset>

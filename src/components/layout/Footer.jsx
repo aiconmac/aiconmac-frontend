@@ -42,7 +42,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">{t('getInTouch')}</h3>
             <ul className="space-y-2 text-gray-400">
               <li><a href="mailto:info@aiconmac.com" className="hover:text-amber-600 transition-colors">info@aiconmac.com</a></li>
-              <li><a href="tel:+971550000000" className="hover:text-amber-600 transition-colors">+971 55 000 0000</a></li>
+              <li><a href="tel:+971502792040" className="hover:text-amber-600 transition-colors">+971 50 279 2040</a></li>
               <li>{t('address')}</li>
             </ul>
           </div>
