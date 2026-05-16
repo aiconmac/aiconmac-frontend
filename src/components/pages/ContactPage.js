@@ -375,8 +375,9 @@ const ContactPage = () => {
 
               <div className="space-y-6">
                 {[
-                  { icon: Phone, label: t('contactDetails.directLine'), value: '+1 (555) 123-4567', subValue: t('contactDetails.available') },
-                  { icon: Mail, label: t('contactDetails.studioEmail'), value: 'projects@aiconmacmodels.com', subValue: t('contactDetails.response') },
+                  { icon: Phone, label: t('contactDetails.directLine'), value: '+971 50 279 2040', subValue: t('contactDetails.available') },
+                  { icon: Phone, label: t('contactDetails.officeLine'), value: '+971 6 535 7585', subValue: t('contactDetails.available') },
+                  { icon: Mail, label: t('contactDetails.studioEmail'), value: 'marketing@aiconmac.com', subValue: t('contactDetails.response') },
                   { icon: MapPin, label: t('contactDetails.designStudio'), value: t('contactDetails.addressLine1'), subValue: t('contactDetails.addressLine2') },
                   { icon: Clock, label: t('contactDetails.studioHours'), value: t('contactDetails.weekdays'), subValue: t('contactDetails.saturday') }
                 ].map((contact, index) => (
@@ -392,7 +393,7 @@ const ContactPage = () => {
                       <div className="text-sm font-medium text-gray-700 uppercase tracking-wider mb-1">
                         {contact.label}
                       </div>
-                      <div className="text-gray-800 font-light">{contact.value}</div>
+                      <div className="text-gray-800 font-light" dir={contact.icon === Phone || contact.icon === Mail ? 'ltr' : undefined}>{contact.value}</div>
                       <div className="text-sm text-gray-500 font-light">{contact.subValue}</div>
                     </div>
                   </motion.div>

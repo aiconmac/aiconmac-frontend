@@ -348,14 +348,15 @@
         },
         "contactDetails": {
             "directLine": "Direct Line",
+            "officeLine": "Office Line",
             "available": "Available 9am - 6pm EST",
             "studioEmail": "Studio Email",
             "response": "24hr Response Time",
             "designStudio": "Design Studio",
             "studioHours": "Studio Hours",
             "saturday": "Saturday: By Appointment",
-            "addressLine1": "123 Architecture Quarter",
-            "addressLine2": "Creative District, New York 10001",
+            "addressLine1": "Warehouse 4, Near Dyna Trade",
+            "addressLine2": "Street 15, Industrial Area 17, Sharjah",
             "weekdays": "Monday - Friday: 9:00 AM - 6:00 PM"
         },
         "map": {
@@ -405,7 +406,7 @@
         "careers": "Careers",
         "contact": "Contact",
         "getInTouch": "Get in Touch",
-        "address": "Industrial Area 15, Sharjah, UAE",
+        "address": "Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah",
         "projectInMind": "Have a project in mind?",
         "partnersText": "Let's create something extraordinary together.",
         "startConversation": "Start a Conversation",

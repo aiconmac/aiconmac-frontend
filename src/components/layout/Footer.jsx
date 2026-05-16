@@ -41,8 +41,9 @@ const Footer = () => {
           <div className="md:col-span-3">
             <h3 className="text-lg font-semibold mb-4">{t('getInTouch')}</h3>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="mailto:info@aiconmac.com" className="hover:text-amber-600 transition-colors">info@aiconmac.com</a></li>
-              <li><a href="tel:+971502792040" className="hover:text-amber-600 transition-colors">+971 50 279 2040</a></li>
+              <li><a href="mailto:marketing@aiconmac.com" dir="ltr" className="inline-block hover:text-amber-600 transition-colors">marketing@aiconmac.com</a></li>
+              <li><a href="tel:+971502792040" dir="ltr" className="inline-block hover:text-amber-600 transition-colors">+971 50 279 2040</a></li>
+              <li><a href="tel:+97165357585" dir="ltr" className="inline-block hover:text-amber-600 transition-colors">+971 6 535 7585</a></li>
               <li>{t('address')}</li>
             </ul>
           </div>

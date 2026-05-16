@@ -23,7 +23,13 @@ const jsonLd = {
   url: 'https://aiconmac.com',
   logo: 'https://aiconmac.com/images/aicon-removebg-preview.png',
   description: "Dubai's premier architectural model atelier. Museum-quality miniature models for masterplans, high-rise towers, villas & interiors.",
-  address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17',
+    addressLocality: 'Sharjah',
+    addressRegion: 'Sharjah',
+    addressCountry: 'AE',
+  },
   sameAs: [
     'https://www.linkedin.com/company/aiconmac-models/',
     'https://www.instagram.com/aiconmac_models/',
