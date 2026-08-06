@@ -150,7 +150,7 @@ const ProjectsPage = ({ selectedCategory, setSelectedCategory, setSelectedProjec
               <div className="text-sm uppercase tracking-wider text-gray-500">{t('statsCollections')}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-extralight text-amber-600">11+</div>
+              <div className="text-3xl font-extralight text-amber-600">15+</div>
               <div className="text-sm uppercase tracking-wider text-gray-500">{t('statsYears')}</div>
             </div>
           </motion.div>

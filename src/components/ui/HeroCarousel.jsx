@@ -16,27 +16,27 @@ const OverlayCarousel = () => {
     {
       title: t('masterPlanning.title'),
       category: t('masterPlanning.category'),
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&h=900&fit=crop"
+      image: "/images/img2.jpg"
     },
     {
       title: t('architecturalModels.title'),
       category: t('architecturalModels.category'),
-      image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&h=900&fit=crop"
+      image: "/images/img3.jpg"
     },
     {
       title: t('industrialModels.title'),
       category: t('industrialModels.category'),
-      image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1600&h=900&fit=crop"
+      image: "/images/img4.jpg"
     },
     {
       title: t('commercialSpaces.title'),
       category: t('commercialSpaces.category'),
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&h=900&fit=crop"
+      image: "/images/img5.jpg"
     },
     {
       title: t('residentialLiving.title'),
       category: t('residentialLiving.category'),
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&h=900&fit=crop"
+      image: "/images/img1.jpg"
     }
   ];
 
@@ -91,6 +91,8 @@ const OverlayCarousel = () => {
             <img
               src={services[currentIndex].image}
               alt={services[currentIndex].title}
+              loading="eager"
+              onError={(e) => { e.currentTarget.src = '/images/img1.jpg'; }}
               className="w-full h-full object-cover"
             />
           </motion.div>

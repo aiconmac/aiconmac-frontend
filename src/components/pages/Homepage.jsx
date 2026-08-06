@@ -54,9 +54,19 @@ const Homepage = () => {
   // Fallback data for testimonials and services if API calls fail
   const testimonialsInitial = [
     {
-      quote: t('fallback.testimonial.quote'),
-      name: t('fallback.testimonial.name'),
-      title: t('fallback.testimonial.title')
+      quote: "We've known Aicon Mac since their very early days and been witness to their continued pursuit of excellence through hard work and dedication to their clients' high expectations. We congratulate them for their success and wish them continued growth.",
+      name: "Abbas Sanei",
+      title: t('googleReview')
+    },
+    {
+      quote: "Great company with outstanding and very high quality of productions and models. I totally recommend you guys to go for it.",
+      name: "Wafa Al Kindi",
+      title: t('googleReview')
+    },
+    {
+      quote: "Their creations are stunning and superb — highly recommended for anyone searching for amazing scale model work.",
+      name: "Christian Cruz",
+      title: t('googleReview')
     }
   ];
 

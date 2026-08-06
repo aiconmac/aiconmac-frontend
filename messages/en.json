@@ -51,8 +51,8 @@
                 "title": "Legacy Collection",
                 "description": "Building tomorrow's architectural heritage today",
                 "items": [
-                    "11+ years of masterpieces",
-                    "1200+ models in portfolios worldwide",
+                    "15+ years of masterpieces",
+                    "500+ models in portfolios worldwide",
                     "Award-winning recognition",
                     "Industry-leading innovation"
                 ]
@@ -62,8 +62,8 @@
         "commissionArtwork": "Custom Creation",
         "aboutAtelier": "About the Atelier",
         "architecturalGallery": "Architectural Gallery",
-        "aboutText1": "Established in 2013 as Dubai's premier architectural model atelier, AICONMAC combines traditional craftsmanship with museum-quality presentation standards. Each piece in our collection represents a meticulous fusion of art, architecture, and precision engineering.",
-        "aboutText2": "Our gallery of 40+ master artisans has curated over 1200 architectural masterpieces, establishing a legacy that transcends borders and transforms the way architectural visions are presented and preserved.",
+        "aboutText1": "Established in 2011 as Dubai's premier architectural model atelier, AICONMAC combines traditional craftsmanship with museum-quality presentation standards. Each piece in our collection represents a meticulous fusion of art, architecture, and precision engineering.",
+        "aboutText2": "Our gallery of 100+ master artisans has curated over 500 architectural masterpieces, establishing a legacy that transcends borders and transforms the way architectural visions are presented and preserved.",
         "vastCollection": "A Vast Collection",
         "curatedWorks": "Curated Works",
         "awardWinningExperts": "Award-Winning Experts",
@@ -125,6 +125,7 @@
         },
         "generatedMedium": "Scale 1:{scale} — Mixed Media",
         "clientTestimonial": "Client Testimonial",
+        "googleReview": "Google Review",
         "HeroCarousel": {
             "masterPlanning": {
                 "title": "Masterplan",
