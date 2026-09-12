@@ -3,13 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { getLocalizedContent } from '@/lib/i18n-utils';
-import Link from 'next/link'; // We might need to use the locale-aware Link from navigation, but for now standard Link or the one passed via props/context
-// Actually, for i18n, we should use the Link from our routing configuration if possible, 
-// but since this is a client component, we might need to import it from '@/i18n/routing' or 'next-intl/navigation'
-// Let's use 'next-intl/navigation' for Link to ensure it handles locales correctly.
 import { Link as IntlLink } from '@/i18n/routing';
 
-import Image from 'next/image';
+import ProjectImage from '@/components/ui/ProjectImage';
+import { homepageProjects, categoryRepresentatives } from '@/lib/homepage-projects.mjs';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
@@ -25,27 +22,8 @@ import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { InfiniteMovingLogos } from '@/components/ui/infinite-moving-logos';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 
-// Import images
-import img2 from '@/images/img2.jpg';
-import img1 from '@/images/img1.jpg';
-import img3 from '@/images/img3.jpg';
-import img4 from '@/images/img4.jpg';
-import img5 from '@/images/img5.jpg';
+import { fetcher } from '@/lib/api';
 import CountUp from '@/components/ui/CountUp';
-
-import { fetcher } from '@/lib/api'; // Import fetcher for backend data
-
-// For the interactive services section
-const serviceImages = {
-  master: img3,
-  architectural: img4,
-  industrial: img5,
-};
-
-// Fallback data for testimonials and services if API calls fail
-
-
-
 
 const Homepage = () => {
   const t = useTranslations('HomePage');
@@ -114,35 +92,33 @@ const Homepage = () => {
     }
   ];
 
-  // Interactive services data
-  const services = [
-    {
-      id: 'master',
-      title: t('services.master.title'),
-      description: t('services.master.description'),
-      img: serviceImages.master,
-    },
-    {
-      id: 'architectural',
-      title: t('services.architectural.title'),
-      description: t('services.architectural.description'),
-      img: serviceImages.architectural,
-    },
-    {
-      id: 'industrial',
-      title: t('services.industrial.title'),
-      description: t('services.industrial.description'),
-      img: serviceImages.industrial,
-    },
-  ];
+  const tCategories = useTranslations('Categories');
+  const [projectsData, setProjectsData] = useState([]);
+  const [projectStatus, setProjectStatus] = useState('loading');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const projects = homepageProjects(projectsData, locale, id => {
+    const key = typeof id === 'string' ? id.replace(/-/g, '_') : '';
+    return key && tCategories.has(key) ? tCategories(key) : (id || '');
+  });
+  const services = categoryRepresentatives(projects);
+  const activeService = services.find(service => service.categoryId === selectedCategory) || services[0];
+  const featuredProjectsData = projects.slice(0, 3);
+  const aboutProject = projects[0];
+  const neutralMessage = t(`projectMedia.${projectStatus === 'loading' ? 'loading' : projectStatus === 'error' ? 'error' : 'empty'}`);
+  const [scrollY] = useState(0);
+  const [testimonialsData, setTestimonialsData] = useState(testimonialsInitial);
+  const [clientsData, setClientsData] = useState([]);
 
-  const [activeServiceImage, setActiveServiceImage] = useState(serviceImages.master);
-  const [scrollY, setScrollY] = useState(0);
-  const [servicesData, setServicesData] = useState([]); // State for fetched services
-  const [testimonialsData, setTestimonialsData] = useState(testimonialsInitial); // State for fetched testimonials
-
-  const [featuredProjectsData, setFeaturedProjectsData] = useState([]); // State for fetched featured projects
-  const [clientsData, setClientsData] = useState([]); // State for fetched clients
+  useEffect(() => {
+    let active = true;
+    fetcher('/projects?isPublished=true').then(data => {
+      if (!Array.isArray(data)) throw new Error('Invalid project response');
+      if (active) { setProjectsData(data); setProjectStatus('ready'); }
+    }).catch(() => {
+      if (active) { setProjectsData([]); setProjectStatus('error'); }
+    });
+    return () => { active = false; };
+  }, []);
 
   // Animation variants
   const fadeIn = {
@@ -182,51 +158,6 @@ const Homepage = () => {
       .catch(err => {
         console.error("Failed to fetch testimonials:", err);
         setTestimonialsData(testimonialsInitial);
-      });
-
-    // Fetch Services/Projects
-    fetcher('/projects?isPublished=true&take=3')
-      .then(data => {
-        const mappedServices = data.map(project => ({
-          id: project.id,
-          title: getLocalizedContent(project, 'title', locale),
-          description: (getLocalizedContent(project, 'description', locale) || '').substring(0, 150) + '...',
-          img: project.images[0] ? { src: project.images[0].url, alt: project.images[0].altText || getLocalizedContent(project, 'title', locale) } : { src: '/images/placeholder.jpg', alt: t('fallback.placeholder') },
-        }));
-        setServicesData(mappedServices);
-        if (mappedServices.length > 0) {
-          setActiveServiceImage(mappedServices[0].img);
-        } else {
-          setActiveServiceImage({ src: '/images/placeholder.jpg', alt: t('fallback.placeholder') });
-        }
-      })
-      .catch(err => {
-        console.error("Failed to fetch services/projects:", err);
-        setServicesData([
-          { id: 'static-master', title: t('services.master.title'), description: t('services.master.description'), img: { src: '/images/placeholder.jpg', alt: t('services.master.title') } },
-          { id: 'static-arch', title: t('services.architectural.title'), description: t('services.architectural.description'), img: { src: '/images/placeholder.jpg', alt: t('services.architectural.title') } },
-        ]);
-        setActiveServiceImage({ src: '/images/placeholder.jpg', alt: t('fallback.placeholder') });
-      });
-
-    // Fetch Featured Projects
-    fetcher('/projects?isPublished=true&take=3')
-      .then(data => {
-        const mappedFeatured = data.map(project => ({
-          img: project.images[0] ? { src: project.images[0].url, alt: project.images[0].altText || getLocalizedContent(project, 'title', locale) } : { src: '/images/placeholder.jpg', alt: t('fallback.placeholder') },
-          title: getLocalizedContent(project, 'title', locale),
-          medium: t('generatedMedium', { scale: Math.floor(Math.random() * 800) + 200 }),
-          year: new Date(project.createdAt).getFullYear(),
-          link: `/projects/${project.id}`
-        }));
-        setFeaturedProjectsData(mappedFeatured);
-      })
-      .catch(err => {
-        console.error("Failed to fetch featured projects:", err);
-        setFeaturedProjectsData([
-          { img: { src: '/images/placeholder.jpg', alt: 'Featured 1' }, title: t('fallback.featured.title1'), medium: t('fallback.featured.medium1'), year: "2023", link: "/projects" },
-          { img: { src: '/images/placeholder.jpg', alt: 'Featured 2' }, title: t('fallback.featured.title2'), medium: t('fallback.featured.medium2'), year: "2023", link: "/projects" },
-        ]);
       });
 
     // Fetch Clients
@@ -276,7 +207,7 @@ const Homepage = () => {
       {/* Museum Background */}
       <MuseumBackground scrollY={scrollY} />
       <div className="relative w-full pt-25">
-        <EnhancedCarousel />
+        <EnhancedCarousel slides={services} emptyMessage={neutralMessage} />
       </div>
 
       {/* Lamp Animation Section - Museum Gallery Style */}
@@ -502,19 +433,20 @@ const Homepage = () => {
                 {/* Museum-style exhibition frame */}
                 <div className="relative bg-transparent p-6 shadow-2xl border border-gray-100">
                   <div className="absolute -inset-6 bg-gradient-to-br from-amber-50 via-white to-gray-50 -z-10" />
-                  <Image
-                    src={img1}
-                    alt="Featured Architectural Model"
+                  <ProjectImage
+                    src={aboutProject?.image}
+                    alt={aboutProject?.title || ''}
+                    fallback={aboutProject ? t('projectMedia.unavailable') : neutralMessage}
                     width={700}
                     height={500}
-                    className="w-full h-auto grayscale-[10%] contrast-110 transform hover:scale-105 transition-transform duration-700"
+                    className="w-full aspect-[7/5] object-cover grayscale-[10%] contrast-110 transform hover:scale-105 transition-transform duration-700"
                   />
 
                   {/* Museum exhibition label */}
                   <div className="mt-6 px-2 border-t border-gray-100 pt-4">
-                    <div className="text-sm font-light text-gray-800 mb-1">{t('featuredMasterpiece')}</div>
+                    <div className="text-sm font-light text-gray-800 mb-1">{aboutProject?.title}</div>
                     <div className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light">
-                      {t('featuredDetails')}
+                      {aboutProject?.category}
                     </div>
                     <div className="text-xs text-gray-400 mt-2 font-light">
                       {t('collectionLocation')}
@@ -573,20 +505,24 @@ const Homepage = () => {
                 viewport={{ once: true }}
               >
                 {services.map((service, index) => (
-                  <motion.div
-                    key={service.id}
-                    onMouseEnter={() => setActiveServiceImage(service.img)}
-                    className="group cursor-pointer relative"
+                  <motion.button
+                    type="button"
+                    aria-pressed={activeService?.categoryId === service.categoryId}
+                    key={service.categoryId}
+                    onMouseEnter={() => setSelectedCategory(service.categoryId)}
+                    onFocus={() => setSelectedCategory(service.categoryId)}
+                    onClick={() => setSelectedCategory(service.categoryId)}
+                    className="group cursor-pointer relative w-full text-start focus-visible:outline-amber-600"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
                     whileHover={{ x: 10 }}
                   >
-                    <div className="border-l-4 border-gray-200 group-hover:border-amber-500 pl-6 py-6 group-hover:bg-white/60 backdrop-blur-sm rounded-r-lg transition-all duration-500">
+                    <div className={`border-s-4 ps-6 py-6 backdrop-blur-sm transition-all duration-500 ${activeService?.categoryId === service.categoryId ? 'border-amber-500 bg-white/60' : 'border-gray-200 group-hover:border-amber-500 group-hover:bg-white/60'}`}>
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl sm:text-2xl font-light text-[#464646] group-hover:text-gray-800 transition-colors">
-                          {service.title}
+                          {service.category}
                         </h3>
                         <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-amber-600 transform group-hover:translate-x-2 transition-all duration-300" />
                       </div>
@@ -596,7 +532,7 @@ const Homepage = () => {
                       {/* Museum-style accent line */}
                       <div className="w-8 h-0.5 bg-amber-400/0 group-hover:bg-amber-400 transition-all duration-500 mt-4" />
                     </div>
-                  </motion.div>
+                  </motion.button>
                 ))}
               </motion.div>
 
@@ -611,9 +547,11 @@ const Homepage = () => {
                 {/* Museum-style display case with lighting */}
                 <div className="relative h-full bg-white shadow-2xl overflow-hidden border border-gray-100">
                   <div className="absolute inset-0 p-8 bg-gradient-to-br from-gray-50 via-white to-amber-50/30">
-                    <div
-                      className="w-full h-full bg-cover bg-center transition-all duration-700 ease-out grayscale-[5%] contrast-110 rounded-sm"
-                      style={{ backgroundImage: `url(${activeServiceImage.src})` }}
+                    <ProjectImage
+                      src={activeService?.image}
+                      alt={activeService?.title || ''}
+                      fallback={activeService ? t('projectMedia.unavailable') : neutralMessage}
+                      className="w-full h-full object-cover object-center grayscale-[5%] contrast-110 rounded-sm"
                     />
                   </div>
 
@@ -624,7 +562,7 @@ const Homepage = () => {
                   {/* Museum information placard */}
                   <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-4 border border-gray-200/50">
                     <div className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light">
-                      {t('interactiveDisplay')}
+                      {activeService?.title || neutralMessage}
                     </div>
                   </div>
                 </div>
@@ -751,13 +689,10 @@ const Homepage = () => {
             </motion.div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-              {[
-                { img: img3, title: t('fallback.featured.title1'), medium: t('fallback.featured.medium1'), year: "2023" },
-                { img: img4, title: t('fallback.featured.title2'), medium: t('fallback.featured.medium2'), year: "2023" },
-                { img: img5, title: t('fallback.featured.title3'), medium: t('fallback.featured.medium3'), year: "2024" }
-              ].map((project, index) => (
+              {!featuredProjectsData.length && <p role="status">{neutralMessage}</p>}
+              {featuredProjectsData.map((project, index) => (
                 <motion.div
-                  key={project.title}
+                  key={project.id}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: index * 0.2 }}
@@ -772,8 +707,9 @@ const Homepage = () => {
                       <div className="absolute inset-0 bg-gradient-to-br from-amber-50/20 via-white to-gray-50/30 group-hover:from-amber-50/40 transition-all duration-500" />
 
                       <div className="relative z-10">
-                        <Image
-                          src={project.img}
+                        <ProjectImage
+                          src={project.image}
+                          fallback={t('projectMedia.unavailable')}
                           alt={project.title}
                           width={600}
                           height={400}
@@ -786,10 +722,9 @@ const Homepage = () => {
                             <h3 className="text-lg font-light text-[#464646] group-hover:text-gray-800 transition-colors">
                               {project.title}
                             </h3>
-                            <span className="text-xs text-gray-400 font-light">{project.year}</span>
                           </div>
                           <p className="text-xs uppercase tracking-[0.15em] text-gray-500 font-light mb-2">
-                            {project.medium}
+                            {project.category}
                           </p>
                           <div className="text-xs text-gray-400 font-light">
                             {t('collectionLocation')}

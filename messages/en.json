@@ -7,6 +7,14 @@
         "exploreProjects": "Explore Collection"
     },
     "HomePage": {
+        "projectMedia": {
+            "loading": "Loading projects…",
+            "empty": "No project images available.",
+            "error": "Project images are currently unavailable.",
+            "unavailable": "Image unavailable",
+            "previous": "Previous project",
+            "next": "Next project"
+        },
         "title": "AICON MAC MODELS - Precision in Miniature",
         "description": "Crafting intricate architectural models with unparalleled detail and artistic excellence.",
         "masterCraftsmanship": "Master Craftsmanship",

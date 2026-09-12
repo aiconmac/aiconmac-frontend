@@ -1,221 +1,76 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 import { useTranslations } from 'next-intl';
+import ProjectImage from './ProjectImage';
 
-const OverlayCarousel = () => {
-  const t = useTranslations('HomePage.HeroCarousel');
+export default function HeroCarousel({ slides = [], emptyMessage }) {
+  const t = useTranslations('HomePage.projectMedia');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const containerRef = useRef(null);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [manuallyPaused, setManuallyPaused] = useState(false);
+  const paused = hovered || focused || manuallyPaused;
+  const index = currentIndex % (slides.length || 1);
+  const slide = slides[index];
 
-  const services = [
-    {
-      title: t('masterPlanning.title'),
-      category: t('masterPlanning.category'),
-      image: "/images/img2.jpg"
-    },
-    {
-      title: t('architecturalModels.title'),
-      category: t('architecturalModels.category'),
-      image: "/images/img3.jpg"
-    },
-    {
-      title: t('industrialModels.title'),
-      category: t('industrialModels.category'),
-      image: "/images/img4.jpg"
-    },
-    {
-      title: t('commercialSpaces.title'),
-      category: t('commercialSpaces.category'),
-      image: "/images/img5.jpg"
-    },
-    {
-      title: t('residentialLiving.title'),
-      category: t('residentialLiving.category'),
-      image: "/images/img1.jpg"
-    }
-  ];
-
-  // Auto-advance carousel
   useEffect(() => {
-    if (isAutoPlaying) {
-      const timer = setInterval(() => {
-        setCurrentIndex(prev => (prev + 1) % services.length);
-      }, 3000);
-      return () => clearInterval(timer);
-    }
-  }, [isAutoPlaying, services.length]);
+    if (paused || slides.length < 2) return;
+    const timer = setInterval(() => setCurrentIndex(previous => (previous + 1) % slides.length), 5000);
+    return () => clearInterval(timer);
+  }, [paused, slides.length]);
 
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-    setIsAutoPlaying(false);
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex(prev => (prev + 1) % services.length);
-    setIsAutoPlaying(false);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex(prev => (prev - 1 + services.length) % services.length);
-    setIsAutoPlaying(false);
+  const select = next => {
+    setCurrentIndex((next + slides.length) % (slides.length || 1));
+    setManuallyPaused(true);
   };
 
   return (
-    <div className="w-full bg-black">
-      <div
-        ref={containerRef}
-        className="relative w-full overflow-hidden"
-        style={{ height: '85vh', minHeight: '600px' }}
-        onMouseEnter={() => setIsAutoPlaying(false)}
-        onMouseLeave={() => setIsAutoPlaying(true)}
-      >
-        {/* Image Background with Smooth Transitions */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7, ease: "easeInOut" }}
-          >
-            {/* Gradient Overlays for Better Text Readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/70 z-10" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40 z-10" />
-
-            <img
-              src={services[currentIndex].image}
-              alt={services[currentIndex].title}
-              loading="eager"
-              onError={(e) => { e.currentTarget.src = '/images/img1.jpg'; }}
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Content Overlay - Minimal Text */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-between p-8 sm:p-12 lg:p-16">
-          {/* Top: Category Badge */}
-          <motion.div
-            key={`category-${currentIndex}`}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="flex justify-start"
-          >
-            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-              <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-              <span className="text-xs sm:text-sm font-light text-white tracking-[0.2em] uppercase">
-                {services[currentIndex].category}
-              </span>
+    <div className="relative w-full overflow-hidden bg-neutral-900 text-white h-[85vh] min-h-[480px] sm:min-h-[600px]"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setHovered(false); setManuallyPaused(false); }}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setFocused(false);
+          setManuallyPaused(false);
+        }
+      }}>
+      <AnimatePresence mode="wait">
+        <motion.div key={slide ? `${slide.id}-${slide.title}` : 'empty'} className="absolute inset-0"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          transition={{ duration: 0.7, ease: 'easeInOut' }}
+          onTouchStart={event => { event.currentTarget.dataset.touchX = event.touches[0].clientX; }}
+          onTouchEnd={event => {
+            const distance = event.changedTouches[0].clientX - Number(event.currentTarget.dataset.touchX);
+            if (slides.length > 1 && Math.abs(distance) > 50) select(index + (distance < 0 ? 1 : -1));
+          }}>
+          <ProjectImage src={slide?.image} alt={slide?.title || ''} fallback={slide ? t('unavailable') : emptyMessage}
+            loading="eager" className="w-full h-full object-cover" />
+          {slide && <>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/70" />
+            <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-12 lg:p-16 pb-28 sm:pb-32 lg:pb-32">
+              <div><span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs sm:text-sm tracking-[0.2em] uppercase">{slide.category}</span></div>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight tracking-tight leading-tight max-w-4xl">{slide.title}</h2>
             </div>
-          </motion.div>
-
-          {/* Bottom: Title and Controls */}
-          <div className="space-y-8">
-            {/* Title */}
-            <motion.div
-              key={`title-${currentIndex}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 30 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight text-white tracking-tight leading-tight max-w-4xl">
-                {services[currentIndex].title}
-              </h2>
-            </motion.div>
-
-            {/* Navigation Controls Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="flex items-center justify-between max-w-2xl"
-            >
-              {/* Progress Indicators */}
-              <div className="flex items-center space-x-3">
-                {services.map((_, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className="group relative"
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <div className={`h-1 rounded-full transition-all duration-500 ${currentIndex === index
-                      ? 'w-16 bg-white'
-                      : 'w-8 bg-white/30 hover:bg-white/50'
-                      }`}>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* Counter and Arrow Buttons */}
-              <div className="flex items-center space-x-4">
-                {/* Counter */}
-                <div className="text-white/80 text-sm font-light tracking-wider">
-                  <span className="text-white font-normal">{String(currentIndex + 1).padStart(2, '0')}</span>
-                  <span className="mx-2">/</span>
-                  <span>{String(services.length).padStart(2, '0')}</span>
-                </div>
-
-
-              </div>
-            </motion.div>
-          </div>
+          </>}
+        </motion.div>
+      </AnimatePresence>
+      {slides.length > 1 && <div className="absolute bottom-8 sm:bottom-12 inset-x-8 sm:inset-x-12 lg:inset-x-16 flex flex-wrap gap-4 items-center justify-between">
+        <div className="flex gap-3">{slides.map((item, itemIndex) => (
+          <button key={item.categoryId} type="button" onClick={() => select(itemIndex)} aria-label={item.title}
+            aria-current={index === itemIndex ? 'true' : undefined} className="py-3">
+            <span className={`block h-1 rounded-full ${index === itemIndex ? 'w-12 bg-white' : 'w-6 bg-white/40'}`} />
+          </button>
+        ))}</div>
+        <div className="flex items-center gap-4">
+          <button type="button" aria-label={t('previous')} onClick={() => select(index - 1)} className="p-2"><ChevronLeft /></button>
+          <span>{index + 1} / {slides.length}</span>
+          <button type="button" aria-label={t('next')} onClick={() => select(index + 1)} className="p-2"><ChevronRight /></button>
         </div>
-
-        {/* Side Navigation (Large Screens Only) */}
-        <div className="hidden xl:block">
-          <div className="absolute left-8 top-1/2 transform -translate-y-1/2 z-30">
-            <motion.button
-              onClick={prevSlide}
-              className="p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300"
-              whileHover={{ scale: 1.1, x: -5 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ChevronLeft className="w-6 h-6 text-white" />
-            </motion.button>
-          </div>
-
-          <div className="absolute right-8 top-1/2 transform -translate-y-1/2 z-30">
-            <motion.button
-              onClick={nextSlide}
-              className="p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300"
-              whileHover={{ scale: 1.1, x: 5 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ChevronRight className="w-6 h-6 text-white" />
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Drag Handler for Mobile */}
-        <motion.div
-          className="absolute inset-0 z-15 xl:hidden"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.2}
-          onDragEnd={(_, info) => {
-            const threshold = 50;
-            if (info.offset.x < -threshold) {
-              nextSlide();
-            } else if (info.offset.x > threshold) {
-              prevSlide();
-            }
-          }}
-        />
-      </div>
+      </div>}
     </div>
   );
-};
-
-export default OverlayCarousel;
+}
