@@ -1,59 +1,31 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { usePathname } from '@/i18n/routing';
-import HeroNavbar from '@/components/ui/HeroNavbar';
 import GlassNavbar from '@/components/layout/GlassNavbar';
 
 const SiteNavbar = ({ isVisible = true }) => {
   const pathname = usePathname();
   const isHomePage = pathname === '/' || pathname === '/en' || pathname === '/ar' || pathname === '/ru';
-  const [showHeroNav, setShowHeroNav] = useState(true);
-  const [showGlassNav, setShowGlassNav] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    if (isHomePage) {
-      // On homepage: show hero navbar when at top, glass navbar when scrolled
-      if (latest < 100) {
-        setShowHeroNav(true);
-        setShowGlassNav(false);
-      } else {
-        setShowHeroNav(false);
-        setShowGlassNav(true);
-      }
-    } else {
-      // On other pages: always show glass navbar
-      setShowHeroNav(false);
-      setShowGlassNav(true);
-    }
-  });
-
-  // Set initial state based on page
   useEffect(() => {
-    if (isHomePage) {
-      const currentScroll = window.scrollY;
-      setShowHeroNav(currentScroll < 100);
-      setShowGlassNav(currentScroll >= 100);
-    } else {
-      setShowHeroNav(false);
-      setShowGlassNav(true);
-    }
-  }, [pathname, isHomePage]);
+    // The page currently scrolls in body; also support document/window scrolling.
+    const updateScrollPosition = () => {
+      setScrollPosition(Math.max(document.body.scrollTop, window.scrollY));
+    };
+    updateScrollPosition();
+    document.body.addEventListener('scroll', updateScrollPosition, { passive: true });
+    window.addEventListener('scroll', updateScrollPosition, { passive: true });
+    return () => {
+      document.body.removeEventListener('scroll', updateScrollPosition);
+      window.removeEventListener('scroll', updateScrollPosition);
+    };
+  }, [pathname]);
 
   if (!isVisible) return null;
 
-  return (
-    <>
-      {/* Show HeroNavbar only on homepage and when at top */}
-      {isHomePage && showHeroNav && <HeroNavbar />}
-
-      {/* Show GlassNavbar when scrolled on homepage OR always on other pages */}
-      {showGlassNav && <GlassNavbar isVisible={true} />}
-    </>
-  );
+  return <GlassNavbar isGlass={!isHomePage || scrollPosition >= 100} />;
 };
 
 export default SiteNavbar;

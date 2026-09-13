@@ -11,7 +11,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 // Import the navbar components
-import HeroNavbar from '@/components/ui/HeroNavbar';
 
 // Import the new carousel
 import EnhancedCarousel from '@/components/ui/HeroCarousel';
@@ -203,7 +202,6 @@ const Homepage = () => {
 
   return (
     <div className="w-full relative">
-      <HeroNavbar />
       {/* Museum Background */}
       <MuseumBackground scrollY={scrollY} />
       <div className="relative w-full pt-25">
