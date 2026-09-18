@@ -1,16 +1,13 @@
 // src/app/layout.js
 import React from 'react';
 import '../globals.css';
+import '../redesign.css';
 import Footer from '@/components/layout/Footer.jsx';
-import AnimatedBackground from '@/components/ui/AnimatedBackground.jsx';
 import ConditionalNavbar from '@/components/layout/ConditionalNavbar';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export async function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -38,7 +35,7 @@ const jsonLd = {
 };
 
 export const viewport = {
-  themeColor: '#d97706',
+  themeColor: '#F3F1EC',
 };
 
 export const metadata = {
@@ -75,15 +72,15 @@ export default async function RootLayout({ children, params }) {
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <head>
+        <link rel="preload" href={`/fonts/${locale === 'ar' ? 'noto-arabic' : locale === 'ru' ? 'noto-sans' : 'archivo'}.woff2`} as="font" type="font/woff2" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.className} min-h-screen min-w-screen relative`}>
+      <body>
         <NextIntlClientProvider messages={messages}>
           <ConditionalNavbar />
-          <AnimatedBackground />
           {children}
           <Footer />
         </NextIntlClientProvider>

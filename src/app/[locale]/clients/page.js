@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import ClientsGrid from '@/components/clients/ClientsGrid';
 import LoadingScreen from '@/components/ui/LoadingScreen';
 import { fetcher } from '@/lib/api';
+import {normalizeClients} from '@/lib/portfolio.mjs';
 
 export default function ClientsPage() {
     const t = useTranslations('ClientsPage');
@@ -16,38 +17,23 @@ export default function ClientsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Mock data for fallback
-    const MOCK_CLIENTS = [
-        { id: '1', name: 'Emaar Properties', logo: '' },
-        { id: '2', name: 'Nakheel', logo: '' },
-        { id: '3', name: 'Dubai Properties', logo: '' },
-        { id: '4', name: 'Damac', logo: '' },
-        { id: '5', name: 'Aldar', logo: '' },
-        { id: '6', name: 'Sobha Realty', logo: '' }
-    ];
-
     useEffect(() => {
         const fetchClients = async () => {
             setIsLoading(true);
             setError(null);
             try {
                 const data = await fetcher('/clients');
-                if (Array.isArray(data) && data.length > 0) {
+                if (normalizeClients(data)) {
                     const localizedClients = data.map(client => ({
                         ...client,
                         name: getLocalizedContent(client, 'name', locale)
                     }));
                     setClients(localizedClients);
-                } else {
-                    console.warn("API returned empty client list, using mock data.");
-                    setClients(MOCK_CLIENTS);
                 }
             } catch (err) {
                 console.error("Failed to fetch clients:", err);
                 // Show the actual error instead of falling back silently
                 setError(err.info?.message || err.message || t('error'));
-                // Optionally still set mock data for development
-                // setClients(MOCK_CLIENTS);
             } finally {
                 setIsLoading(false);
             }
@@ -57,7 +43,7 @@ export default function ClientsPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100 selection:text-amber-900">
+        <main id="main-content" className="min-h-screen bg-white text-gray-900 font-sans selection:bg-amber-100 selection:text-amber-900">
 
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 overflow-hidden">
@@ -120,6 +106,6 @@ export default function ClientsPage() {
                     )}
                 </div>
             </section>
-        </div>
+        </main>
     );
 }

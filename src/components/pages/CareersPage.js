@@ -204,7 +204,7 @@ const CareersPage = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-28">
+    <main id="main-content" className="min-h-screen relative overflow-hidden pt-28">
       {/* Museum lighting effects */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-100/20 rounded-full blur-3xl opacity-50" />
@@ -631,7 +631,7 @@ const CareersPage = () => {
           </motion.div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

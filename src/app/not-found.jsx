@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import React from 'react';
 
@@ -29,12 +30,12 @@ export default function RootNotFound() {
                         </p>
 
                         <div className="flex justify-center">
-                            <a
+                            <Link
                                 href="/"
                                 className="bg-gradient-to-r from-amber-600 to-amber-700 text-white font-light py-4 px-8 uppercase tracking-widest text-sm transition-all hover:scale-105 hover:shadow-xl shadow-amber-500/25"
                             >
                                 Back to Home Page
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

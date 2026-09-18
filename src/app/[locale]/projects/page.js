@@ -1,33 +1,10 @@
-// src/app/projects/page.js
-"use client";
-
-import React, { useState } from 'react';
-import { useRouter } from '@/i18n/routing';
-
-import ProjectsPageContent from '@/components/pages/ProjectsPage'; // Renamed for clarity, though original name works
-import ProjectDetail from '@/components/modals/ProjectDetail';
-
-export default function ProjectsRoutePage() {
-  const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState('all'); // State for filtering
-  const [selectedProject, setSelectedProject] = useState(null); // State for modal
-
-  return (
-    <>
-      {/* Ensure main content wrapper allows space for fixed header and is above AnimatedBackground */}
-      <div className="relative z-10 pt-24 sm:pt-28 md:pt-32 min-h-screen"> {/* Added pt and min-h-screen */}
-        <ProjectsPageContent
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          setSelectedProject={setSelectedProject} // Pass down the modal setter
-        />
-      </div>
-      {selectedProject && (
-        <ProjectDetail
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
-    </>
-  );
+import {Suspense} from 'react';
+import {getTranslations, setRequestLocale} from 'next-intl/server';
+import WorkProjects from '@/components/redesign/WorkProjects';
+import Clients from '@/components/redesign/Clients';
+export default async function WorkPage({params}) {
+  const {locale} = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({locale, namespace: 'Design'});
+  return <main id="main-content" className="design-page"><Suspense fallback={<div className="collection-status"><h1>{t('work')}</h1><p>{t('loading')}</p></div>}><WorkProjects /></Suspense><section id="clients" className="clients-section design-section"><div><h2>{t('clients')}</h2><p>{t('clientsIntro')}</p></div><Clients /></section></main>;
 }
