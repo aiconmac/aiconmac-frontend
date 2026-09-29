@@ -6,6 +6,11 @@ test('the empty File a browser adds for an untouched input is dropped', () => {
   assert.deepEqual(cleanDrawings([new File([], '')]), []);
   assert.deepEqual(cleanDrawings([]), []);
 });
+test('extensions are checked case-insensitively', () => {
+  assert.equal(cleanDrawings([file('photo.heic', 10)]), null);
+  const upper = [file('PLAN.PDF', 10)];
+  assert.deepEqual(cleanDrawings(upper), upper);
+});
 test('real files pass; too many or too large returns null', () => {
   const ok = [file('a.pdf', 10), file('b.dwg', 20)];
   assert.deepEqual(cleanDrawings(ok), ok);

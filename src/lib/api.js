@@ -30,5 +30,5 @@ export async function request(path, {method = 'GET', body, timeout = TIMEOUT_MS,
 }
 
 export const fetcher = path => request(path);
-export const poster = (path, body) => request(path, {method: 'POST', body});
+export const poster = (path, body, options) => request(path, {...options, method: 'POST', body});
 export const downloadBrochure = email => poster('/brochure-request', {email});

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {request, ApiError} from '../src/lib/api.js';
+import {request, poster, ApiError} from '../src/lib/api.js';
 const hang = (url, {signal}) => new Promise((_, reject) => signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), {name: 'AbortError'}))));
 test('timeout aborts and reports timeout', async () => {
   await assert.rejects(request('/clients', {timeout: 20, fetch: hang}), error => error instanceof ApiError && error.kind === 'timeout');
@@ -19,4 +19,7 @@ test('POST sends JSON with a content type and FormData untouched', async () => {
   const form = new FormData(); form.append('a', '1');
   await request('/contact', {method: 'POST', body: form, fetch});
   assert.equal(seen[1].headers, undefined); assert.equal(seen[1].body, form);
+});
+test('poster honours a timeout option', async () => {
+  await assert.rejects(poster('/contact', new FormData(), {timeout: 20, fetch: hang}), error => error instanceof ApiError && error.kind === 'timeout');
 });

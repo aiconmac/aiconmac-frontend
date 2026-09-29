@@ -20,7 +20,7 @@ export default function ContactForm({categories}) {
     drawings.forEach(file => data.append('drawings', file));
     setState({phase: 'pending'});
     try {
-      await poster('/contact', data);
+      await poster('/contact', data, drawings.length ? {timeout: 120000} : undefined);
       form.current.reset();
       setState({phase: 'success'});
     } catch (error) {
@@ -33,7 +33,7 @@ export default function ContactForm({categories}) {
     <label>{t('form.email')}<input name="email" type="email" required autoComplete="email" dir="ltr" /></label>
     <label>{t('form.phone')}<input name="phone" type="tel" autoComplete="tel" dir="ltr" /></label>
     <label>{t('form.category')}<select name="projectType" required defaultValue=""><option value="" disabled>{t('form.choose')}</option>{categories.map(category => <option key={category.slug} value={category.slug} {...localized(category, 'name', locale)} />)}</select></label>
-    <label>{t('form.message')}<textarea name="message" required minLength={10} rows={6} /></label>
+    <label>{t('form.message')}<textarea name="message" dir="auto" required minLength={10} rows={6} /></label>
     <label>{t('form.drawings')}<input name="drawings" type="file" multiple accept={DRAWING_LIMITS.accept} /><span className="hint">{t('form.drawingsHint')}</span></label>
     <p ref={status} tabIndex={-1} role="status" aria-live="polite" className="form-status">{text}</p>
     <button className="design-button orange" disabled={state.phase === 'pending'}>{t('form.submit')} →</button>
