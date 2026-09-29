@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import fs from 'node:fs';
 
 const messages = Object.fromEntries(['en', 'ar'].map(locale => [locale, JSON.parse(fs.readFileSync(`messages/${locale}.json`, 'utf8')).Design]));
-const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي', logo: '/images/logo.jpg'}, {id: 'c2', name: 'Second client', logo: '/images/img1.jpg'}];
+const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي', logo: '/images/logo.png'}, {id: 'c2', name: 'Second client', logo: '/images/img1.jpg'}];
 const slug = fs.readdirSync('out/en/projects').filter(name => name.endsWith('.html')).map(name => name.slice(0, -5))[0];
 const pages = ['', '/projects', `/projects/${slug}`, '/contact'];
 const overflow = () => document.documentElement.scrollWidth <= innerWidth;
