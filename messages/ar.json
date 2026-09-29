@@ -33,11 +33,9 @@
     "photo": "صورة",
     "pause": "إيقاف مؤقت",
     "play": "تشغيل",
-    "directory": "عرض دليل العملاء",
     "clientsIntro": "دليل عملائنا. تواصلوا معنا لمناقشة مشروعكم.",
     "enquireAction": "استفسروا",
     "backToWork": "جميع المشاريع",
-    "escapeHint": "اضغطوا Escape للعودة إلى جميع المشاريع.",
     "selected": "أعمال مختارة",
     "explore": "استكشفوا جميع الأعمال",
     "studioIntro": "مجسمات بمختلف المقاييس.",
@@ -87,18 +85,17 @@
       "drawingsHint": "حتى 5 ملفات، 10 ميجابايت لكل ملف: PDF أو DWG أو DXF أو JPG أو PNG",
       "submit": "إرسال الاستفسار",
       "sending": "جارٍ الإرسال…",
-      "sent": "شكراً لكم. تم إرسال استفساركم."
+      "sent": "شكراً لكم. تم إرسال استفساركم.",
+      "about": "المشروع: {title}"
     },
     "heroMeta": "الشارقة، الإمارات العربية المتحدة · منذ عام 2009 · عادةً خلال 4 أسابيع",
     "quotesTitle": "آراء العملاء",
-    "quotePending": "سيُضاف نص شهادة العميل قريباً.",
     "quotes": [
       {"text": "", "name": "Abbas Sanei", "role": "المدير المقيم", "firm": "Quad Design"},
       {"text": "", "name": "Wafa Al Kindi", "role": "الشؤون المؤسسية", "firm": "Whale Oman Pelletizing Company"},
       {"text": "", "name": "Ahmed Shabazi", "role": "نائب الرئيس الأول، رئيس المشاريع", "firm": "Sharjah Islamic Bank"},
       {"text": "", "name": "Sultan Al Hamadi", "role": "مهندس معماري", "firm": "Sharjah Institute of Heritage"}
     ],
-    "topClients": "عملاء مختارون",
     "legal": "أيكونماك علامة تجارية لشركة Alpha Micro Models.",
     "meta": {
       "home": {

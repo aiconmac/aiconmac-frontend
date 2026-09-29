@@ -12,7 +12,7 @@ export default async function HomeProjects({projects}) {
     <ProjectTile project={lead} className="lead-tile" priority />
     <div className="text-tile"><span className="eyebrow">{lead.category ? <span {...localized(lead.category, 'name', locale)} /> : t('selected')}</span><h2 className="tile-headline" {...localized(lead, 'title', locale)} /><p className="body-copy" lang={description.lang} dir={description.dir}>{description.children.length > 220 ? description.children.slice(0, 217) + '…' : description.children}</p></div>
     {shown.slice(1, 4).map(project => <ProjectTile key={project.id} project={project} />)}
-    <a className="text-tile orange" href={`/${locale}/projects`}><span className="eyebrow">{t('work')}</span><p className="tile-headline">{t('explore')} →</p></a>
+    <a className="text-tile explore" href={`/${locale}/projects`}><span className="eyebrow">{t('work')}</span><p className="tile-headline">{t('explore')} →</p></a>
     {shown.slice(4).map(project => <ProjectTile className="wide-tile" key={project.id} project={project} />)}
   </section>;
 }

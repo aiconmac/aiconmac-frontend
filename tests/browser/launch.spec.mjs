@@ -7,7 +7,7 @@ const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي',
 const slug = fs.readdirSync('out/en/projects').filter(name => name.endsWith('.html')).map(name => name.slice(0, -5))[0];
 const pages = ['', '/projects', `/projects/${slug}`, '/contact'];
 const overflow = () => document.documentElement.scrollWidth <= innerWidth;
-const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .ticker-window, .thumbnails button, .detail-stage, .logo-strip li') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
+const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .ticker-window, .thumbnails button, .detail-stage') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
 const smallTargets = () => [...document.querySelectorAll('main button, main input, main select, main textarea, main a.design-button, header a, footer a, .filter-bar button')].filter(el => el.offsetParent !== null).map(el => [el.outerHTML.slice(0, 60), el.getBoundingClientRect().height]).filter(([, height]) => height < 44);
 
 async function mock(page, {post = () => ({status: 201, json: {id: 'x'}})} = {}) {
@@ -43,12 +43,23 @@ test.describe('viewports', () => {
   });
 });
 
-test('tiles carry scale and lead time captions, visible on desktop', async ({page}) => {
-  await mock(page); await page.goto('/en/projects');
+test('tiles carry a numbered meta caption and a loaded image, visible on desktop', async ({page}) => {
+  await mock(page); await page.goto('/en/projects', {waitUntil: 'networkidle'});
   const caption = page.locator('.work-tiles .tile-caption').first();
   await expect(caption).toBeVisible();
   await expect(caption).toHaveCSS('transform', 'none');
-  await expect(page.locator('.work-tiles .tile-facts').first()).toContainText(/Scale|Lead time|Client/);
+  const meta = page.locator('.work-tiles .tile-meta').first();
+  await expect(meta).toHaveText(/^01\b/);
+  await expect(meta).not.toContainText('Lead time');
+  expect(await page.locator('.work-tiles img').first().evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+});
+
+test('Enquire on a detail page prefills the contact form with the project title', async ({page}) => {
+  await mock(page); await page.goto(`/en/projects/${slug}`);
+  const title = await page.locator('#detail-heading').textContent();
+  await page.locator('.detail-copy a.design-button').click();
+  await expect(page).toHaveURL(new RegExp(`/en/contact\\?project=${slug}#enquire-form$`));
+  await expect(page.locator('[name=message]')).toHaveValue(new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 });
 
 test('language links keep path and query; filters never push history', async ({page}) => {

@@ -1,4 +1,7 @@
-"""Serve the static export locally, including extensionless locale routes."""
+"""Serve the static export locally, including extensionless locale routes.
+
+After changing API data (e.g. swapping fixtures), `rm -rf .next/cache/fetch-cache` before `npm run build`: build fetches use force-cache and otherwise reuse the old responses.
+"""
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.request import urlopen

@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 }
 
 export const viewport = {
-  themeColor: '#F3F1EC',
+  themeColor: '#F4F2ED',
 };
 
 export async function generateMetadata({ params }) {

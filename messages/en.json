@@ -33,11 +33,9 @@
     "photo": "Photo",
     "pause": "Pause",
     "play": "Play",
-    "directory": "View client directory",
     "clientsIntro": "Our client directory. Get in touch to discuss your project.",
     "enquireAction": "Enquire",
     "backToWork": "All projects",
-    "escapeHint": "Press Escape to return to all projects.",
     "selected": "Selected work",
     "explore": "Explore the complete portfolio",
     "studioIntro": "Models at every scale.",
@@ -87,18 +85,17 @@
       "drawingsHint": "Up to 5 files, 10 MB each: PDF, DWG, DXF, JPG or PNG",
       "submit": "Send enquiry",
       "sending": "Sending…",
-      "sent": "Thank you. Your enquiry has been sent."
+      "sent": "Thank you. Your enquiry has been sent.",
+      "about": "Project: {title}"
     },
     "heroMeta": "Sharjah, United Arab Emirates · Since 2009 · Typically 4 weeks",
     "quotesTitle": "What clients say",
-    "quotePending": "Client testimonial to follow.",
     "quotes": [
       {"text": "", "name": "Abbas Sanei", "role": "Resident Director", "firm": "Quad Design"},
       {"text": "", "name": "Wafa Al Kindi", "role": "Corporate Affairs", "firm": "Whale Oman Pelletizing Company"},
       {"text": "", "name": "Ahmed Shabazi", "role": "SVP Head of Projects", "firm": "Sharjah Islamic Bank"},
       {"text": "", "name": "Sultan Al Hamadi", "role": "Architect", "firm": "Sharjah Institute of Heritage"}
     ],
-    "topClients": "Selected clients",
     "legal": "Aiconmac is a trademark of Alpha Micro Models.",
     "meta": {
       "home": {

@@ -16,6 +16,6 @@ export default function WorkProjects({projects, categories}) {
     <div className="filter-bar"><h1>{t('work')}</h1><button className="design-button" aria-pressed={category === 'all'} onClick={() => select(null)}>{t('all')} · {projects.length}</button>{available.map(item => <button className="design-button" aria-pressed={category === item.slug} key={item.slug} onClick={() => select(item.slug)} {...localized(item, 'name', locale)} />)}</div>
     {!projects.length && <p className="collection-status">{t('empty')}</p>}
     {!!projects.length && !filtered.length && <p className="collection-status">{t('emptyFilter')}</p>}
-    <div className="work-tiles ruled-grid" data-count={filtered.length}>{filtered.map(project => <ProjectTile key={project.id} project={project} sizes={filtered.length === 1 ? '100vw' : filtered.length === 2 ? '(max-width: 600px) 100vw, 50vw' : undefined} />)}</div>
+    <div className="work-tiles ruled-grid" data-count={filtered.length}>{filtered.map((project, index) => <ProjectTile key={project.id} project={project} priority={index < 3} sizes={filtered.length === 1 ? '100vw' : filtered.length === 2 ? '(max-width: 600px) 100vw, 50vw' : undefined} />)}</div>
   </>;
 }

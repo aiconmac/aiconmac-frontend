@@ -35,19 +35,16 @@ export default async function ProjectPage({params}) {
   if (!project) notFound();
   const t = await getTranslations({locale, namespace: 'Design'});
   const title = localized(project, 'title', locale);
-  const badge = localized(project, 'badge', locale);
   const work = `/${locale}/projects`;
   return <main id="main-content" className="design-page"><EscapeTo href={work} /><article className="project-detail" aria-labelledby="detail-heading">
     <div className="detail-head"><h1 id="detail-heading" {...title} /><a className="design-button" href={work}>{t('backToWork')}</a></div>
-    <Gallery images={project.images} numeral={project.numeral} alt={title.children} />
+    <Gallery images={project.images} alt={title.children} />
     <div className="detail-copy">
       {project.category && <div className="detail-fact"><span className="eyebrow">{t('category')}</span><span {...localized(project.category, 'name', locale)} /></div>}
       <ProjectFacts project={project} className="detail-facts" />
-      {badge.children && <div className="detail-fact"><span {...badge} /></div>}
       {/* OWNER_CONTENT: Arabic descriptions pending; localized() falls back to English until entered in the dashboard. */}
       <p className="detail-description" {...localized(project, 'description', locale)} />
-      <a className="design-button orange" href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} →</a>
-      <p className="escape-hint">{t('escapeHint')}</p>
+      <a className="design-button" href={`/${locale}/contact?project=${project.slug}#enquire-form`}>{t('enquireAction')} →</a>
     </div>
   </article></main>;
 }

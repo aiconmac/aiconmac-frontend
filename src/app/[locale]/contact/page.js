@@ -1,5 +1,6 @@
 import {getTranslations, setRequestLocale} from 'next-intl/server';
-import {getCategories} from '@/lib/build-data.mjs';
+import {getCategories, getProjects} from '@/lib/build-data.mjs';
+import {localized} from '@/lib/portfolio.mjs';
 import {pageMetadata} from '@/lib/seo.mjs';
 import ContactForm from '@/components/redesign/ContactForm';
 const ADDRESS = 'Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah, United Arab Emirates';
@@ -12,7 +13,8 @@ export default async function ContactPage({params}) {
   const {locale} = await params;
   setRequestLocale(locale);
   const t = await getTranslations({locale, namespace: 'Design'});
-  const categories = await getCategories();
+  const [categories, projects] = await Promise.all([getCategories(), getProjects()]);
+  const enquiries = Object.fromEntries(projects.map(project => [project.slug, {title: localized(project, 'title', locale).children, category: project.category?.slug}]));
   return <main id="main-content" className="design-page"><section className="contact-grid design-section">
     <div>
       <p className="eyebrow">{t('contact')}</p>
@@ -27,6 +29,6 @@ export default async function ContactPage({params}) {
         <p className="hint">{t('careersLine')} <a dir="ltr" href="mailto:marketing@aiconmac.com?subject=Careers">marketing@aiconmac.com</a></p>
       </div>
     </div>
-    <ContactForm categories={categories} />
+    <ContactForm categories={categories} projects={enquiries} />
   </section></main>;
 }

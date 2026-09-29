@@ -4,13 +4,20 @@ import {useLocale, useTranslations} from 'next-intl';
 import {poster} from '@/lib/api';
 import {localized} from '@/lib/portfolio.mjs';
 import {cleanDrawings, DRAWING_LIMITS} from '@/lib/contact.mjs';
-export default function ContactForm({categories}) {
+export default function ContactForm({categories, projects}) {
   const t = useTranslations('Design');
   const locale = useLocale();
   const form = useRef(null);
   const status = useRef(null);
   const [state, setState] = useState({phase: 'idle'});
   useEffect(() => { if (state.phase === 'success' || state.phase === 'error') status.current?.focus(); }, [state]);
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get('project');
+    if (!Object.hasOwn(projects, slug)) return;
+    const project = projects[slug];
+    form.current.message.value = `${t('form.about', {title: project.title})}\n\n`;
+    if (project.category) form.current.projectType.value = project.category;
+  }, [projects, t]);
   async function submit(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
