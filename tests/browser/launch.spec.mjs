@@ -94,6 +94,17 @@ test('keyboard walk: nav → language links → filter → detail → gallery �
   }
 });
 
+test('header underlines Clients, not Work, on the clients anchor', async ({page}) => {
+  await mock(page); await page.goto('/en/projects');
+  const nav = page.locator('.desktop-nav');
+  await expect(nav.getByRole('link', {name: 'Work', exact: true})).toHaveAttribute('aria-current', 'page');
+  await nav.getByRole('link', {name: 'Clients', exact: true}).click();
+  await expect(nav.getByRole('link', {name: 'Clients', exact: true})).toHaveAttribute('aria-current', 'location');
+  await expect(nav.getByRole('link', {name: 'Work', exact: true})).not.toHaveAttribute('aria-current', /.+/);
+  await page.goto('/en/projects#clients'); await page.reload();
+  await expect(nav.getByRole('link', {name: 'Clients', exact: true})).toHaveAttribute('aria-current', 'location');
+});
+
 test('detail page metadata is per project and Escape works from the thumbnails', async ({page}) => {
   await mock(page); await page.goto(`/en/projects/${slug}`);
   const title = await page.title();
