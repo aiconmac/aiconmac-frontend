@@ -29,7 +29,6 @@
     "empty": "No published projects yet.",
     "emptyFilter": "No published projects in this category.",
     "emptyClients": "No clients to display yet.",
-    "unavailable": "This project is unavailable or no longer published.",
     "noImage": "Photography unavailable",
     "all": "All projects",
     "category": "Category",
@@ -65,19 +64,9 @@
       "http": "The server could not complete the request. Please try again shortly.",
       "malformed": "The response could not be read. Please try again."
     },
-    "categories": {
-      "all": "All Projects",
-      "masterplan": "Masterplan",
-      "high_midrise": "High & Midrise",
-      "villa": "Villa Models",
-      "interior": "Interior Models",
-      "mechanical": "Mechanical Effect Models",
-      "conceptual": "Conceptual Models",
-      "industrial": "Industrial Models",
-      "gifts": "Gift Models",
-      "architectural": "Architectural Models",
-      "3d_printing": "3D Printing",
-      "business_gifts": "Business Gifts"
-    }
+    "scale": "Scale",
+    "leadTime": "Lead time",
+    "client": "Client",
+    "days": "{count, plural, one {# day} other {# days}}"
   }
 }

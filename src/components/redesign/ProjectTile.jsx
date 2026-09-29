@@ -1,15 +1,12 @@
-'use client';
-import {useLocale, useTranslations} from 'next-intl';
+import {useLocale} from 'next-intl';
 import {localized} from '@/lib/portfolio.mjs';
 import Media from './Media';
-export default function ProjectTile({project, shot = 0, className = '', sizes, href, onClick, priority = false}) {
+import ProjectFacts from './ProjectFacts';
+export default function ProjectTile({project, shot = 0, className = '', sizes, priority = false}) {
   const locale = useLocale();
-  const categories = useTranslations('Design.categories');
-  const key = project.category.replaceAll('-', '_');
-  const category = categories.has(key) ? categories(key) : project.category;
-  return <a href={href || `/${locale}/projects?project=${encodeURIComponent(project.id)}`} className={`project-tile ${className}`} onClick={onClick} data-project={project.id}>
+  return <a href={`/${locale}/projects/${project.slug}`} className={`project-tile ${className}`} data-project={project.slug}>
     <Media key={project.images[shot]?.url} src={project.images[shot]?.url} alt="" priority={priority} sizes={sizes || (className === 'lead-tile' ? '(max-width: 899px) 100vw, 67vw' : className === 'wide-tile' ? '(max-width: 600px) 100vw, 50vw' : undefined)} />
     <span className="plate-number" aria-hidden="true">{project.numeral}</span>
-    <span className="tile-caption"><span {...localized(project, 'title', locale)} />{categories.has(key) ? <span>{category}</span> : <span {...localized(project, 'category', locale)} />}</span>
+    <span className="tile-caption"><span className="tile-title" {...localized(project, 'title', locale)} />{project.category && <span {...localized(project.category, 'name', locale)} />}<ProjectFacts project={project} className="tile-facts" /></span>
   </a>;
 }

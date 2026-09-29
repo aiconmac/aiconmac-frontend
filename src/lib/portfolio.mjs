@@ -1,16 +1,25 @@
 export class MalformedResponse extends Error {}
 const text = value => typeof value === 'string' ? value.trim() : '';
+function normalizeCategory(value) {
+  return value && typeof value === 'object' && text(value.slug) && text(value.name) ? {slug: value.slug.trim(), name: value.name.trim(), name_ar: text(value.name_ar) || null} : null;
+}
 export function normalizeProjects(data) {
   if (!Array.isArray(data) || data.some(p => !p || typeof p !== 'object' || typeof p.isPublished !== 'boolean')) throw new MalformedResponse('Expected a project collection');
   const seen = new Set();
-  return data.filter(p => p?.isPublished === true).map(p => {
-    if (!text(p.id) || !text(p.title) || seen.has(p.id)) throw new MalformedResponse('Invalid project identity');
+  return data.filter(p => p.isPublished === true).map(p => {
+    if (!text(p.id) || !text(p.slug) || !text(p.title) || seen.has(p.id)) throw new MalformedResponse('Invalid project identity');
     seen.add(p.id);
     const images = (Array.isArray(p.images) ? p.images : []).filter(image =>
       (!image?.projectId || image.projectId === p.id) && typeof image?.url === 'string' && /^(https?:\/\/|\/(?!\/))\S+$/.test(image.url.trim())
     ).map(image => ({...image, url: image.url.trim()}));
-    return {...p, category: text(p.category), images, numeral: String(seen.size).padStart(2, '0')};
+    return {...p, slug: p.slug.trim(), category: normalizeCategory(p.category), scale: text(p.scale) || null, leadTimeDays: Number.isInteger(p.leadTimeDays) && p.leadTimeDays > 0 ? p.leadTimeDays : null, clientName: text(p.clientName) || null, images, numeral: String(seen.size).padStart(2, '0')};
   });
+}
+export function normalizeCategories(data) {
+  if (!Array.isArray(data)) throw new MalformedResponse('Expected a category collection');
+  const categories = data.map(normalizeCategory);
+  if (categories.some(category => !category)) throw new MalformedResponse('Invalid category');
+  return categories;
 }
 export function normalizeClients(data) {
   if (!Array.isArray(data) || data.some(c => !text(c?.id) || !text(c?.name))) throw new MalformedResponse('Invalid client collection');

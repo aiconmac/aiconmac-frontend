@@ -1,15 +1,33 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeProjects, normalizeClients, localized, portfolioUrl, imageVariant, loadCollection, dropPending, localePath, MalformedResponse} from '../src/lib/portfolio.mjs';
-const project = (id, images = []) => ({id, title: id, category:'architectural', isPublished:true, images});
+import {normalizeProjects, normalizeClients, normalizeCategories, localized, portfolioUrl, imageVariant, loadCollection, dropPending, localePath, MalformedResponse} from '../src/lib/portfolio.mjs';
+const category = {slug: 'architectural', name: 'Architectural', name_ar: 'معماري'};
+const project = (id, images = [], extra = {}) => ({id, slug: `slug-${id}`, title: id, category, scale: '1:75', leadTimeDays: 28, clientName: 'Emaar', isPublished: true, images, ...extra});
 test('published identity/order and image ownership survive normalization; image-less records remain', () => {
   const records = [project('b', [{url:'/b2.jpg',order:2,projectId:'b'}, {url:'/b1.jpg',order:1,projectId:'b'}, {url:'/other.jpg',projectId:'other'}, {url:'javascript:bad'}, null]), {...project('hidden'),isPublished:false}, project('a',null)];
   const result = normalizeProjects(records);
-  assert.deepEqual(result.map(p => [p.id,p.numeral]), [['b','01'],['a','02']]);
+  assert.deepEqual(result.map(p => [p.id,p.slug,p.numeral]), [['b','slug-b','01'],['a','slug-a','02']]);
   assert.deepEqual(result[0].images.map(i=>i.url), ['/b2.jpg','/b1.jpg']);
   assert.deepEqual(result[1].images, []);
   assert.deepEqual(normalizeProjects([]), []);
-  for (const invalid of [null, {}, 'bad', [null], [project('')], [project('same'),project('same')], [{id:'draft'}]]) assert.throws(()=>normalizeProjects(invalid),MalformedResponse);
+  for (const invalid of [null, {}, 'bad', [null], [project('')], [project('same'),project('same')], [{id:'draft'}], [project('noslug', [], {slug: ''})]]) assert.throws(()=>normalizeProjects(invalid),MalformedResponse);
+});
+test('category object, scale, lead time and client are kept; null category survives; junk becomes null', () => {
+  const [full] = normalizeProjects([project('p')]);
+  assert.deepEqual(full.category, category);
+  assert.equal(full.scale, '1:75'); assert.equal(full.leadTimeDays, 28); assert.equal(full.clientName, 'Emaar');
+  const [bare] = normalizeProjects([project('q', [], {category: null, scale: '  ', leadTimeDays: 'soon', clientName: 42})]);
+  assert.equal(bare.category, null); assert.equal(bare.scale, null); assert.equal(bare.leadTimeDays, null); assert.equal(bare.clientName, null);
+  assert.equal(normalizeProjects([project('r', [], {category: 'architectural'})])[0].category, null);
+  assert.equal(normalizeProjects([project('s', [], {leadTimeDays: 0})])[0].leadTimeDays, null);
+});
+test('categories come back trimmed and ordered as given; malformed throws', () => {
+  assert.deepEqual(normalizeCategories([{id: 1, slug: ' masterplan ', name: ' Masterplan ', name_ar: 'مخطط', sortOrder: 2}, {slug: 'villa', name: 'Villa'}]), [{slug: 'masterplan', name: 'Masterplan', name_ar: 'مخطط'}, {slug: 'villa', name: 'Villa', name_ar: null}]);
+  for (const invalid of [null, {}, [{slug: 'x'}], [{name: 'x'}], [null]]) assert.throws(() => normalizeCategories(invalid), MalformedResponse);
+});
+test('localized works on the category object for Arabic and falls back to English', () => {
+  assert.deepEqual(localized(category, 'name', 'ar'), {children: 'معماري', lang: 'ar', dir: 'rtl'});
+  assert.deepEqual(localized({slug: 'v', name: 'Villa', name_ar: null}, 'name', 'ar'), {children: 'Villa', lang: 'en', dir: 'ltr'});
 });
 test('malformed image shapes are neutral, never borrowed', () => {
   for (const images of [null,undefined,{},42,'url',[{},null,{url:42},{url:'//evil'}, {url:' '}]]) assert.deepEqual(normalizeProjects([project('p',images)])[0].images,[]);
