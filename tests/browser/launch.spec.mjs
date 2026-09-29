@@ -37,7 +37,7 @@ test.describe('viewports', () => {
       if (width <= 390) expect(await page.evaluate(smallTargets), `${path} targets`).toEqual([]);
       await page.screenshot({path: `test-results/${locale}-${width}${path.replaceAll('/', '-') || '-home'}.png`, fullPage: true});
     }
-    expect(await page.evaluate(() => performance.getEntriesByType('resource').filter(r => r.name.endsWith('.woff2')).map(r => r.name.split('/').at(-1)))).toEqual([locale === 'ar' ? 'noto-arabic.woff2' : 'archivo.woff2']);
+    expect(await page.evaluate(() => performance.getEntriesByType('resource').filter(r => r.name.endsWith('.woff2')).map(r => r.name.split('/').at(-1)).sort())).toEqual(locale === 'ar' ? ['noto-kufi-arabic.woff2', 'schibsted-grotesk.woff2'] : ['schibsted-grotesk.woff2']);
     if (width < 900) { await page.goto(`/${locale}`); await page.locator('summary').click(); await expect(page.locator('.mobile-menu nav')).toBeVisible(); await page.keyboard.press('Escape'); await expect(page.locator('.mobile-menu')).not.toHaveAttribute('open', ''); }
     expect(errors).toEqual([]);
   });
