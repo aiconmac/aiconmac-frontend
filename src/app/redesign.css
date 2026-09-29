@@ -2,10 +2,10 @@
 @font-face{font-family:NotoArabic;src:url('/fonts/noto-arabic.woff2') format('woff2');font-weight:300 800;font-display:swap}
 :root{--paper:#F3F1EC;--ink:#1F1E1C;--line:#CFCAC0;--orange:#EF5F22;--well:#E6E2DA;--font-design:Archivo,Arial,sans-serif}
 html[lang=ar]{--font-design:NotoArabic,Arial,sans-serif}
-html{scroll-padding-top:80px}body{height:auto;overflow:visible;background:var(--paper);color:var(--ink);font-family:var(--font-design);letter-spacing:-.005em}
+*,*::before,*::after{box-sizing:border-box}html{scroll-padding-top:80px}body{margin:0;height:auto;overflow:visible;background:var(--paper);color:var(--ink);font-family:var(--font-design);letter-spacing:-.005em}
 .design-page,.design-header,.design-footer{font-family:var(--font-design);color:var(--ink);font-size:15px;line-height:1.4}
 .design-page a,.design-header a,.design-footer a{color:inherit;text-decoration:none}
-.design-page button,.design-header button,.design-footer button,.design-header select{font:inherit;color:inherit;cursor:pointer}
+.design-page button,.design-header button,.design-footer button{font:inherit;color:inherit;cursor:pointer}
 .design-page :focus-visible,.design-header :focus-visible,.design-footer :focus-visible{outline:3px solid var(--ink);outline-offset:4px;position:relative;z-index:2}
 .design-page h1,.design-page h2,.design-page p{margin:0}.design-page h1,.design-page h2{font-weight:500}
 .design-header{position:sticky;top:0;z-index:40;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;min-height:60px;padding:8px 24px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}

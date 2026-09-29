@@ -1,4 +1,3 @@
-import '../globals.css';
 import '../redesign.css';
 import Footer from '@/components/layout/Footer.jsx';
 import SiteNavbar from '@/components/layout/SiteNavbar';
