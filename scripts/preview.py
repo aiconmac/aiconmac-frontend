@@ -12,7 +12,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         # Only public collections are proxied, never project-by-ID or admin endpoints.
-        if self.path in ('/api/projects?isPublished=true', '/api/clients'):
+        if self.path in ('/api/projects?isPublished=true', '/api/clients', '/api/categories'):
             try:
                 with urlopen('https://api.aiconmac.com' + self.path, timeout=20) as response:
                     body = response.read()

@@ -41,6 +41,7 @@ test('localized content carries English fallback direction and bounded text valu
   const item = {title:'Title',title_ar:'عنوان',title_ru:'Заголовок'};
   assert.deepEqual(localized(item,'title','ar'),{children:'عنوان',lang:'ar',dir:'rtl'});
   assert.deepEqual(localized({title:'Title',title_ar:42},'title','ar'),{children:'Title',lang:'en',dir:'ltr'});
+  assert.deepEqual(localized({title: 'T', title_ar: ''}, 'title', 'ar'), {children: 'T', lang: 'en', dir: 'ltr'});
   assert.equal(localized(item,'title','ru').lang,'ru');
 });
 test('URL changes preserve filter, unrelated query, and anchors', () => {
