@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeProjects, normalizeClients, normalizeCategories, localized, portfolioUrl, imageVariant, loadCollection, dropPending, localePath, MalformedResponse} from '../src/lib/portfolio.mjs';
+import {normalizeProjects, normalizeClients, normalizeCategories, localized, portfolioUrl, imageVariant, imageSrcSet, loadCollection, dropPending, localePath, MalformedResponse} from '../src/lib/portfolio.mjs';
 const category = {slug: 'architectural', name: 'Architectural', name_ar: 'معماري'};
 const project = (id, images = [], extra = {}) => ({id, slug: `slug-${id}`, title: id, category, scale: '1:75', leadTimeDays: 28, clientName: 'Emaar', isPublished: true, images, ...extra});
 test('published identity/order and image ownership survive normalization; image-less records remain', () => {
@@ -52,6 +52,8 @@ test('URL changes preserve filter, unrelated query, and anchors', () => {
 test('only verified Cloudinary account gets responsive transformations', () => {
   assert.equal(imageVariant('https://res.cloudinary.com/dgr0y1scl/image/upload/v1/a.jpg',480),'https://res.cloudinary.com/dgr0y1scl/image/upload/f_auto,q_auto,c_limit,w_480/v1/a.jpg');
   for(const url of ['/local.jpg','https://example.com/a.jpg','https://res.cloudinary.com/other/image/upload/a.jpg']) assert.equal(imageVariant(url,480),url);
+  assert.equal(imageSrcSet('/local.jpg'),undefined);
+  assert.match(imageSrcSet('https://res.cloudinary.com/dgr0y1scl/image/upload/v1/a.jpg'),/w_480\/v1\/a.jpg 480w, .*w_2400\/v1\/a.jpg 2400w$/);
 });
 test('in-flight deduplication releases both successful and failed requests for revalidation/retry', async () => {
   let calls=0;const fetchData=async()=>{calls++;return [project('p')];};

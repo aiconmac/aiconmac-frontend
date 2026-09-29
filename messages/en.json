@@ -15,7 +15,7 @@
     "language": "Language",
     "contact": "Contact",
     "catalogue": "Catalogue",
-    "hero": "Architectural models, managed from Sharjah, installed on site.",
+    "hero": "Physical models that make complex projects clear.",
     "intro": "Architectural, masterplan and industrial models for presentations, exhibitions and design exploration.",
     "enquire": "Let’s discuss your next model.",
     "email": "Email",
@@ -88,7 +88,7 @@
       "sent": "Thank you. Your enquiry has been sent.",
       "about": "Project: {title}"
     },
-    "heroMeta": "Sharjah, United Arab Emirates · Since 2009 · Typically 4 weeks",
+    "heroMeta": "Managed from Sharjah, installed on site · Since 2009 · Typically 4 weeks",
     "quotesTitle": "What clients say",
     "quotes": [
       {"text": "", "name": "Abbas Sanei", "role": "Resident Director", "firm": "Quad Design"},

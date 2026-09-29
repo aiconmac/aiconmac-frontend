@@ -124,6 +124,16 @@ test('home shows each featured project once and the logo in header and footer', 
   for (const area of ['.design-header', '.design-footer']) await expect(page.locator(`${area} img[alt="Aiconmac"]`)).toBeVisible();
 });
 
+test('home hero: nav is transparent over the hero and solid after scrolling past it', async ({page}) => {
+  await mock(page); await page.goto('/en');
+  const header = page.locator('header.design-header');
+  await expect(header).toHaveAttribute('data-over-hero', '');
+  expect(await page.locator('.home-hero>img').evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+  await page.mouse.move(700, 500); await page.mouse.wheel(0, 2000);
+  await expect(header).not.toHaveAttribute('data-over-hero');
+  await expect(header).toHaveCSS('background-color', 'rgb(244, 242, 237)');
+});
+
 test('detail page metadata is per project and Escape works from the thumbnails', async ({page}) => {
   await mock(page); await page.goto(`/en/projects/${slug}`);
   const title = await page.title();

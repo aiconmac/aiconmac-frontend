@@ -41,6 +41,9 @@ export function imageVariant(url, width) {
   const prefix = 'https://res.cloudinary.com/dgr0y1scl/image/upload/';
   return url?.startsWith(prefix) ? `${prefix}f_auto,q_auto,c_limit,w_${width}/${url.slice(prefix.length)}` : url;
 }
+export function imageSrcSet(url) {
+  return imageVariant(url, 960) === url ? undefined : [480, 800, 1200, 1800, 2400].map(w => `${imageVariant(url, w)} ${w}w`).join(', ');
+}
 export function localePath(pathname, search, locale) {
   const rest = pathname.replace(/^\/(en|ar)(?=\/|$)/, '').replace(/^\/$/, '');
   return `/${locale}${rest}${search || ''}`;
