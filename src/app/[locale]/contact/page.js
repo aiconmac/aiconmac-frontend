@@ -2,7 +2,7 @@ import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {getCategories} from '@/lib/build-data.mjs';
 import {pageMetadata} from '@/lib/seo.mjs';
 import ContactForm from '@/components/redesign/ContactForm';
-const ADDRESS = 'Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah, UAE';
+const ADDRESS = 'Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah, United Arab Emirates';
 export async function generateMetadata({params}) {
   const {locale} = await params;
   const t = await getTranslations({locale, namespace: 'Design'});

@@ -15,7 +15,7 @@
     "language": "Language",
     "contact": "Contact",
     "catalogue": "Catalogue",
-    "hero": "Architectural models, built by hand in Sharjah.",
+    "hero": "Architectural models, managed from Sharjah, installed on site.",
     "intro": "Architectural, masterplan and industrial models for presentations, exhibitions and design exploration.",
     "enquire": "Let’s discuss your next model.",
     "email": "Email",
@@ -47,8 +47,9 @@
     "studio2Text": "A wider view of developments and their surroundings.",
     "studio3": "Industry",
     "studio3Text": "Physical models of facilities and infrastructure.",
-    "studio4": "The workshop",
+    "studio4": "The studio",
     "studio4Text": "Visit our team in Industrial Area 17, Sharjah.",
+    "studioStory": "Designed and managed in Sharjah, fabricated in our partner facility, and installed by our own team.",
     "skip": "Skip to content",
     "catalogueTitle": "Download catalogue",
     "cataloguePrompt": "Enter your email to receive the catalogue.",
@@ -73,7 +74,7 @@
     "hours": "Hours",
     "hoursValue": "Monday to Saturday, 9:00–18:00 Gulf Standard Time",
     "directions": "Directions",
-    "addressFull": "Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah, UAE",
+    "addressFull": "Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah, United Arab Emirates",
     "careersLine": "Careers: email your CV to",
     "form": {
       "name": "Full name",
@@ -88,7 +89,8 @@
       "sending": "Sending…",
       "sent": "Thank you. Your enquiry has been sent."
     },
-    "founded": "Founded 2009 · Sharjah, UAE",
+    "founded": "Founded 2009 · Sharjah, United Arab Emirates",
+    "deliveredLine": "Delivered and installed across the United Arab Emirates and the GCC.",
     "leadTimeLine": "Typically 4 weeks, faster for small or rush jobs",
     "quotesTitle": "What clients say",
     "quotePending": "Client testimonial to follow.",
@@ -102,8 +104,8 @@
     "legal": "Aiconmac is a trademark of Alpha Micro Models.",
     "meta": {
       "home": {
-        "title": "Aiconmac — Architectural models, built by hand in Sharjah",
-        "description": "Architectural, masterplan and industrial scale models for developers, architects and government. Founded 2009. Typically 4 weeks."
+        "title": "Architectural Model Makers United Arab Emirates | Scale Models for Developers – Aiconmac",
+        "description": "Architectural and real estate scale models for developers, architects and marketing teams across the United Arab Emirates and the GCC. Trusted by Emaar since 2009."
       },
       "work": {
         "title": "Work — Aiconmac architectural models",
@@ -111,7 +113,7 @@
       },
       "contact": {
         "title": "Enquire — Aiconmac",
-        "description": "Send drawings and your presentation date. Sharjah workshop, Monday to Saturday, WhatsApp in English."
+        "description": "Send drawings and your presentation date. Sharjah studio, Monday to Saturday, WhatsApp in English."
       }
     }
   }
