@@ -1,1 +1,7 @@
-/ /en 302
+/ru/* /en/:splat 301
+/en/clients /en/projects#clients 301
+/ar/clients /ar/projects#clients 301
+/en/careers /en/contact 301
+/ar/careers /ar/contact 301
+/en/loading-demo /en 301
+/ar/loading-demo /ar 301
