@@ -15,3 +15,14 @@ test('image-less pages fall back to the site OG image', () => {
   assert.equal(meta.openGraph.images[0].url, `${SITE}/og-image.jpg`);
   assert.equal(meta.openGraph.locale, 'en_US');
 });
+import {localBusinessJsonLd} from '../src/lib/seo.mjs';
+test('LocalBusiness names the legal entity, brand, address and phone', () => {
+  assert.equal(localBusinessJsonLd['@type'], 'LocalBusiness');
+  assert.equal(localBusinessJsonLd.name, 'Aiconmac');
+  assert.equal(localBusinessJsonLd.legalName, 'Alpha Micro Models');
+  assert.equal(localBusinessJsonLd.brand.name, 'Aiconmac');
+  assert.equal(localBusinessJsonLd.telephone, '+97165357585');
+  assert.equal(localBusinessJsonLd.foundingDate, '2009');
+  assert.equal(localBusinessJsonLd.address.addressLocality, 'Sharjah');
+  assert.deepEqual(localBusinessJsonLd.openingHoursSpecification[0].dayOfWeek, ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+});
