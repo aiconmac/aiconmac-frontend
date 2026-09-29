@@ -3,7 +3,7 @@ import React from 'react';
 import '../globals.css';
 import '../redesign.css';
 import Footer from '@/components/layout/Footer.jsx';
-import ConditionalNavbar from '@/components/layout/ConditionalNavbar';
+import SiteNavbar from '@/components/layout/SiteNavbar';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -72,7 +72,7 @@ export default async function RootLayout({ children, params }) {
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <head>
-        <link rel="preload" href={`/fonts/${locale === 'ar' ? 'noto-arabic' : locale === 'ru' ? 'noto-sans' : 'archivo'}.woff2`} as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href={`/fonts/${locale === 'ar' ? 'noto-arabic' : 'archivo'}.woff2`} as="font" type="font/woff2" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -80,7 +80,7 @@ export default async function RootLayout({ children, params }) {
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <ConditionalNavbar />
+          <SiteNavbar />
           {children}
           <Footer />
         </NextIntlClientProvider>
