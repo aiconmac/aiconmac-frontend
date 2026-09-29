@@ -105,6 +105,14 @@ test('header underlines Clients, not Work, on the clients anchor', async ({page}
   await expect(nav.getByRole('link', {name: 'Clients', exact: true})).toHaveAttribute('aria-current', 'location');
 });
 
+test('home shows each featured project once and the logo in header and footer', async ({page}) => {
+  await mock(page); await page.goto('/en');
+  const slugs = await page.locator('.home-tiles .project-tile').evaluateAll(tiles => tiles.map(tile => tile.dataset.project));
+  expect(slugs.length).toBeGreaterThan(1);
+  expect(new Set(slugs).size).toBe(slugs.length);
+  for (const area of ['.design-header', '.design-footer']) await expect(page.locator(`${area} img[alt="Aiconmac"]`)).toBeVisible();
+});
+
 test('detail page metadata is per project and Escape works from the thumbnails', async ({page}) => {
   await mock(page); await page.goto(`/en/projects/${slug}`);
   const title = await page.title();
