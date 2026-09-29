@@ -121,7 +121,7 @@ test('home shows each featured project once and the logo in header and footer', 
   const slugs = await page.locator('.home-tiles .project-tile').evaluateAll(tiles => tiles.map(tile => tile.dataset.project));
   expect(slugs.length).toBeGreaterThan(1);
   expect(new Set(slugs).size).toBe(slugs.length);
-  for (const area of ['.design-header', '.design-footer']) await expect(page.locator(`${area} img[alt="Aiconmac"]`)).toBeVisible();
+  for (const area of ['.design-header', '.design-footer']) await expect(page.locator(`${area} img[alt="Aiconmac"]:visible`)).toHaveCount(1);
 });
 
 test('home hero: nav is transparent over the hero and solid after scrolling past it', async ({page}) => {
@@ -129,9 +129,12 @@ test('home hero: nav is transparent over the hero and solid after scrolling past
   const header = page.locator('header.design-header');
   await expect(header).toHaveAttribute('data-over-hero', '');
   expect(await page.locator('.home-hero>img').evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+  const logo = header.locator('img[alt="Aiconmac"]:visible');
+  await expect(logo).toHaveAttribute('src', '/images/logo-dark.png');
   await page.mouse.move(700, 500); await page.mouse.wheel(0, 2000);
   await expect(header).not.toHaveAttribute('data-over-hero');
   await expect(header).toHaveCSS('background-color', 'rgb(244, 242, 237)');
+  await expect(logo).toHaveAttribute('src', '/images/logo.png');
 });
 
 test('reduced motion leaves the hero fully visible on load; full motion settles visible', async ({browser}) => {
