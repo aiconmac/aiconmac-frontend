@@ -109,16 +109,16 @@ test('detail page metadata is per project and Escape works from the thumbnails',
 test.describe('interception', () => {
   for (const locale of ['en', 'ar']) {
     test(`${locale}: stalled GET shows loading with retry, then recovers`, async ({page}) => {
-      let release; const wait = new Promise(resolve => release = resolve);
-      await page.route('**/api/clients', async route => { await wait; await route.fulfill({json: clients}); });
+      let stall = true; const held = [];
+      await page.route('**/api/clients', route => stall ? held.push(route) : route.fulfill({json: clients}));
       await page.goto(`/${locale}/projects`);
       const status = page.locator('.client-list .collection-status');
       await expect(status).toContainText(messages[locale].loading);
       await expect(status.getByRole('button', {name: messages[locale].retry})).toBeVisible();
-      await page.unroute('**/api/clients'); await mock(page);
+      stall = false;
       await status.getByRole('button', {name: messages[locale].retry}).click();
       await expect(page.locator('.client-row')).toHaveCount(2);
-      release();
+      for (const route of held) await route.fulfill({json: clients}).catch(() => {});
     });
     for (const [name, post, kind] of [
       ['500 HTML', () => ({status: 500, contentType: 'text/html', body: '<h1>Error</h1>'}), 'http'],
