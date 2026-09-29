@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeProjects, normalizeClients, localized, portfolioUrl, imageVariant, loadCollection, MalformedResponse} from '../src/lib/portfolio.mjs';
+import {normalizeProjects, normalizeClients, localized, portfolioUrl, imageVariant, loadCollection, dropPending, MalformedResponse} from '../src/lib/portfolio.mjs';
 const project = (id, images = []) => ({id, title: id, category:'architectural', isPublished:true, images});
 test('published identity/order and image ownership survive normalization; image-less records remain', () => {
   const records = [project('b', [{url:'/b2.jpg',order:2,projectId:'b'}, {url:'/b1.jpg',order:1,projectId:'b'}, {url:'/other.jpg',projectId:'other'}, {url:'javascript:bad'}, null]), {...project('hidden'),isPublished:false}, project('a',null)];
@@ -42,4 +42,14 @@ test('in-flight deduplication releases both successful and failed requests for r
   await loadCollection('/projects?isPublished=true',fetchData);assert.equal(calls,2);
   await assert.rejects(loadCollection('/projects?isPublished=true',async()=>{throw Error('offline');}));
   assert.equal((await loadCollection('/projects?isPublished=true',fetchData))[0].id,'p');
+});
+test('dropPending lets a retry bypass a stalled request', async () => {
+  let resolveFirst; const stalled = () => new Promise(resolve => { resolveFirst = resolve; });
+  const first = loadCollection('/clients', stalled);
+  assert.equal(loadCollection('/clients', stalled), first);
+  dropPending('/clients');
+  const second = loadCollection('/clients', async () => [{id: '1', name: 'Fresh'}]);
+  assert.notEqual(second, first);
+  assert.equal((await second)[0].name, 'Fresh');
+  resolveFirst([]);
 });

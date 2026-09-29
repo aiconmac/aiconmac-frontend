@@ -60,7 +60,10 @@
     "catalogueDownloading": "Your catalogue is downloading.",
     "processing": "Processing…",
     "errors": {
-      "http": "The server could not complete the request. Please try again shortly."
+      "timeout": "The request took too long. Please try again.",
+      "network": "No connection. Check your network and try again.",
+      "http": "The server could not complete the request. Please try again shortly.",
+      "malformed": "The response could not be read. Please try again."
     },
     "categories": {
       "all": "All Projects",

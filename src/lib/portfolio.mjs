@@ -33,6 +33,7 @@ export function imageVariant(url, width) {
   return url?.startsWith(prefix) ? `${prefix}f_auto,q_auto,c_limit,w_${width}/${url.slice(prefix.length)}` : url;
 }
 const pending = new Map();
+export function dropPending(path) { pending.delete(path); }
 export function loadCollection(path, fetchData) {
   if (!pending.has(path)) pending.set(path, Promise.resolve().then(() => fetchData(path)).then(path.startsWith('/projects') ? normalizeProjects : normalizeClients).finally(() => pending.delete(path)));
   return pending.get(path);

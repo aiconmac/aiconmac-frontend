@@ -1,51 +1,34 @@
-// main-website/src/lib/api.js
-
-// Ensure this matches the URL your backend API is running on
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
+export const TIMEOUT_MS = 10000;
 
-export async function fetcher(url) {
-  const response = await fetch(`${API_BASE_URL}${url}`);
-  if (!response.ok) {
-    console.warn(`API Error fetching ${url}:`, response.status, response.statusText);
-    const error = new Error('An error occurred while fetching data.');
-    try {
-      error.info = await response.json();
-    } catch (e) {
-      error.info = { message: response.statusText };
-    }
-    error.status = response.status;
-    throw error;
+export class ApiError extends Error {
+  constructor(kind, status) {
+    super(kind);
+    this.kind = kind;
+    this.status = status;
   }
-  return response.json();
 }
 
-export async function downloadBrochure(email) {
-  return poster('/brochure-request', { email });
+export async function request(path, {method = 'GET', body, timeout = TIMEOUT_MS, fetch = globalThis.fetch} = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  const json = body !== undefined && !(body instanceof FormData);
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {method, body: json ? JSON.stringify(body) : body, headers: json ? {'Content-Type': 'application/json'} : undefined, signal: controller.signal});
+  } catch (error) {
+    throw new ApiError(error.name === 'AbortError' ? 'timeout' : 'network');
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!response.ok) throw new ApiError('http', response.status);
+  try {
+    return await response.json();
+  } catch {
+    throw new ApiError('malformed');
+  }
 }
 
-export async function poster(url, data, isFormData = false) {
-  const headers = {};
-  let body;
-
-  if (isFormData) {
-    // For FormData, headers 'Content-Type' is set automatically by the browser
-    body = data;
-  } else {
-    headers['Content-Type'] = 'application/json';
-    body = JSON.stringify(data);
-  }
-
-  const response = await fetch(`${API_BASE_URL}${url}`, {
-    method: 'POST',
-    headers: headers, // Only include Content-Type if not FormData
-    body: body,
-  });
-
-  if (!response.ok) {
-    const error = new Error('An error occurred while submitting data.');
-    error.info = await response.json(); // Get error details from backend
-    error.status = response.status;
-    throw error;
-  }
-  return response.json();
-}
+export const fetcher = path => request(path);
+export const poster = (path, body) => request(path, {method: 'POST', body});
+export const downloadBrochure = email => poster('/brochure-request', {email});
