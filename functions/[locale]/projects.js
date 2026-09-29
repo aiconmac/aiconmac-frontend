@@ -11,8 +11,11 @@ export async function onRequestGet(context) {
     const response = await (context.fetchSlug || fetch)(`${API}/projects/${encodeURIComponent(id)}`);
     if (response.ok) {
       const {slug} = await response.json();
-      if (typeof slug === 'string' && slug) target.pathname = `/${locale}/projects/${slug}`;
+      if (typeof slug === 'string' && slug) {
+        target.pathname = `/${locale}/projects/${slug}`;
+        return Response.redirect(target.toString(), 301);
+      }
     }
   } catch {}
-  return Response.redirect(target.toString(), 301);
+  return Response.redirect(target.toString(), 302);
 }

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {pickLocale, onRequest} from '../functions/index.js';
 import {onRequestGet} from '../functions/[locale]/projects.js';
 test('browser language picks the locale, English otherwise', () => {
@@ -21,9 +22,28 @@ test('legacy ?project=<id> resolves to the slug page; unknown id falls back to W
   let response = await onRequestGet(context('https://x/en/projects?project=known', 'en'));
   assert.equal(response.status, 301); assert.equal(response.headers.get('location'), 'https://x/en/projects/tower-one');
   response = await onRequestGet(context('https://x/ar/projects?project=missing', 'ar'));
-  assert.equal(response.status, 301); assert.equal(response.headers.get('location'), 'https://x/ar/projects');
+  assert.equal(response.status, 302); assert.equal(response.headers.get('location'), 'https://x/ar/projects');
   response = await onRequestGet(context('https://x/ru/projects?category=x', 'ru'));
   assert.equal(response.status, 301); assert.equal(response.headers.get('location'), 'https://x/en/projects?category=x');
   response = await onRequestGet(context('https://x/en/projects', 'en'));
   assert.equal(await response.text(), 'asset');
+});
+test('every legacy URL has a 301 in _redirects', () => {
+  const rules = fs.readFileSync('public/_redirects', 'utf8').trim().split('\n').map(line => line.trim().split(/\s+/));
+  const table = Object.fromEntries(rules.map(([from, to, status]) => [from, [to, status]]));
+  for (const [from, to] of [
+    ['/ru', '/en'], ['/ru/*', '/en/:splat'],
+    ['/clients', '/en/projects#clients'], ['/en/clients', '/en/projects#clients'], ['/ar/clients', '/ar/projects#clients'],
+    ['/careers', '/en/contact'], ['/en/careers', '/en/contact'], ['/ar/careers', '/ar/contact'],
+    ['/loading-demo', '/en'], ['/en/loading-demo', '/en'], ['/ar/loading-demo', '/ar'],
+  ]) assert.deepEqual(table[from], [to, '301'], from);
+  assert.ok(!('/' in table), 'root is handled by functions/index.js');
+});
+test('API failure on legacy ?project=<id> answers 302 to Work, never a cached 301', async () => {
+  const context = fetchSlug => ({request: new Request('https://x/en/projects?project=abc'), params: {locale: 'en'}, next: () => new Response('asset'), fetchSlug});
+  for (const fetchSlug of [async () => { throw new TypeError('down'); }, async () => new Response('<h1>502</h1>', {status: 502}), async () => new Response('{bad', {status: 200}), async () => Response.json({})]) {
+    const response = await onRequestGet(context(fetchSlug));
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.get('location'), 'https://x/en/projects');
+  }
 });
