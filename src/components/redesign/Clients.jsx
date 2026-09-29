@@ -2,7 +2,7 @@
 import {useState} from 'react';
 import {useLocale, useTranslations} from 'next-intl';
 import useCollection from '@/hooks/useCollection';
-import {localized} from '@/lib/portfolio.mjs';
+import {imageVariant, localized} from '@/lib/portfolio.mjs';
 import CollectionStatus from './CollectionStatus';
 export default function Clients({ticker = false}) {
   const collection = useCollection('/clients');
@@ -14,5 +14,9 @@ export default function Clients({ticker = false}) {
     <CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />
     <div className="ticker-actions"><a href={`/${locale}/projects#clients`}>{t('directory')} →</a>{collection.data.length > 0 && <button aria-pressed={paused} onClick={() => setPaused(!paused)}>{t(paused ? 'play' : 'pause')}</button>}</div>
   </div>;
-  return <div className="client-list"><CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />{collection.data.map((client, index) => <div className="client-row" key={client.id}><span>{String(index + 1).padStart(2, '0')}</span><span {...localized(client, 'name', locale)} /><a href={`/${locale}/contact`}>{t('enquireAction')} →</a></div>)}</div>;
+  const logos = collection.data.filter(client => typeof client.logo === 'string' && client.logo).slice(0, 8);
+  return <>
+    {logos.length > 0 && <ul className="logo-strip" aria-label={t('topClients')}>{logos.map(client => <li key={client.id}><img src={imageVariant(client.logo, 320)} alt={client.name} width="160" height="80" loading="lazy" /></li>)}</ul>}
+    <div className="client-list"><CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />{collection.data.map((client, index) => <div className="client-row" key={client.id}><span>{String(index + 1).padStart(2, '0')}</span><span {...localized(client, 'name', locale)} /><a href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} →</a></div>)}</div>
+  </>;
 }

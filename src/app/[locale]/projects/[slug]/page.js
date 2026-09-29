@@ -44,6 +44,7 @@ export default async function ProjectPage({params}) {
       {project.category && <div className="detail-fact"><span className="eyebrow">{t('category')}</span><span {...localized(project.category, 'name', locale)} /></div>}
       <ProjectFacts project={project} className="detail-facts" />
       {badge.children && <div className="detail-fact"><span {...badge} /></div>}
+      {/* OWNER_CONTENT: Arabic descriptions pending; localized() falls back to English until entered in the dashboard. */}
       <p className="detail-description" {...localized(project, 'description', locale)} />
       <a className="design-button orange" href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} →</a>
       <p className="escape-hint">{t('escapeHint')}</p>

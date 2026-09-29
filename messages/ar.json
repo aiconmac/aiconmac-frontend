@@ -10,7 +10,6 @@
     "work": "الأعمال",
     "studio": "الاستوديو",
     "clients": "العملاء",
-    "send": "أرسل الرسومات",
     "menu": "القائمة",
     "close": "إغلاق",
     "language": "اللغة",
@@ -21,7 +20,6 @@
     "intro": "مجسمات معمارية ومخططات رئيسية وصناعية للعروض والمعارض واستكشاف التصاميم.",
     "enquire": "لنتحدث عن مجسمك القادم.",
     "email": "البريد الإلكتروني",
-    "call": "اتصل بالاستوديو",
     "enquiryNote": "أخبرنا عن مشروعك ومقياسه وموعد العرض. أرفق الرسومات إن وُجدت.",
     "address": "المنطقة الصناعية 17، الشارقة، الإمارات",
     "loading": "جارٍ التحميل…",
@@ -92,6 +90,18 @@
       "sending": "جارٍ الإرسال…",
       "sent": "شكراً لك. تم إرسال استفسارك."
     },
+    "founded": "تأسست عام 2009 · الشارقة، الإمارات",
+    "leadTimeLine": "عادةً خلال 4 أسابيع، وأسرع للمشاريع الصغيرة أو العاجلة",
+    "quotesTitle": "آراء العملاء",
+    "quotePending": "سيُضاف نص شهادة العميل قريباً.",
+    "quotes": [
+      {"text": "", "name": "Abbas Sanei", "role": "المدير المقيم", "firm": "Quad Design"},
+      {"text": "", "name": "Wafa Al Kindi", "role": "الشؤون المؤسسية", "firm": "Whale Oman Pelletizing Company"},
+      {"text": "", "name": "Ahmed Shabazi", "role": "نائب الرئيس الأول، رئيس المشاريع", "firm": "Sharjah Islamic Bank"},
+      {"text": "", "name": "Sultan Al Hamadi", "role": "مهندس معماري", "firm": "Sharjah Institute of Heritage"}
+    ],
+    "topClients": "عملاء مختارون",
+    "legal": "أيكونماك علامة تجارية مسجلة لشركة Alpha Micro Models.",
     "meta": {
       "home": {
         "title": "أيكونماك — مجسمات معمارية تُصنع يدوياً في الشارقة",

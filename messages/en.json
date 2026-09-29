@@ -10,7 +10,6 @@
     "work": "Work",
     "studio": "Studio",
     "clients": "Clients",
-    "send": "Send drawings",
     "menu": "Menu",
     "close": "Close",
     "language": "Language",
@@ -21,7 +20,6 @@
     "intro": "Architectural, masterplan and industrial models for presentations, exhibitions and design exploration.",
     "enquire": "Let’s discuss your next model.",
     "email": "Email",
-    "call": "Call the studio",
     "enquiryNote": "Tell us about your project, its scale and your presentation date. Attach drawings if you have them.",
     "address": "Industrial Area 17, Sharjah, UAE",
     "loading": "Loading…",
@@ -92,6 +90,18 @@
       "sending": "Sending…",
       "sent": "Thank you. Your enquiry has been sent."
     },
+    "founded": "Founded 2009 · Sharjah, UAE",
+    "leadTimeLine": "Typically 4 weeks, faster for small or rush jobs",
+    "quotesTitle": "What clients say",
+    "quotePending": "Client testimonial to follow.",
+    "quotes": [
+      {"text": "", "name": "Abbas Sanei", "role": "Resident Director", "firm": "Quad Design"},
+      {"text": "", "name": "Wafa Al Kindi", "role": "Corporate Affairs", "firm": "Whale Oman Pelletizing Company"},
+      {"text": "", "name": "Ahmed Shabazi", "role": "SVP Head of Projects", "firm": "Sharjah Islamic Bank"},
+      {"text": "", "name": "Sultan Al Hamadi", "role": "Architect", "firm": "Sharjah Institute of Heritage"}
+    ],
+    "topClients": "Selected clients",
+    "legal": "Aiconmac is a trademark of Alpha Micro Models.",
     "meta": {
       "home": {
         "title": "Aiconmac — Architectural models, built by hand in Sharjah",
