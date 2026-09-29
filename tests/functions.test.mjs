@@ -39,6 +39,22 @@ test('every legacy URL has a 301 in _redirects', () => {
   ]) assert.deepEqual(table[from], [to, '301'], from);
   assert.ok(!('/' in table), 'root is handled by functions/index.js');
 });
+test('bare /contact and /projects redirect to English, keeping the query', async () => {
+  const {onRequestGet: bareContact} = await import('../functions/contact.js');
+  const {onRequestGet: bareProjects} = await import('../functions/projects.js');
+  let response = await bareContact({request: new Request('https://x/contact')});
+  assert.equal(response.status, 301); assert.equal(response.headers.get('location'), 'https://x/en/contact');
+  response = await bareProjects({request: new Request('https://x/projects')});
+  assert.equal(response.status, 301); assert.equal(response.headers.get('location'), 'https://x/en/projects');
+});
+test('/projects?project=<id> chains through the locale function to the slug page', async () => {
+  const {onRequestGet: bareProjects} = await import('../functions/projects.js');
+  const fetchSlug = async url => new Response(url.endsWith('/known') ? JSON.stringify({slug: 'tower-one'}) : 'not found', {status: url.endsWith('/known') ? 200 : 404});
+  const first = await bareProjects({request: new Request('https://x/projects?project=known')});
+  assert.equal(first.status, 301); assert.equal(first.headers.get('location'), 'https://x/en/projects?project=known');
+  const second = await onRequestGet({request: new Request(first.headers.get('location')), params: {locale: 'en'}, next: () => new Response('asset'), fetchSlug});
+  assert.equal(second.status, 301); assert.equal(second.headers.get('location'), 'https://x/en/projects/tower-one');
+});
 test('API failure on legacy ?project=<id> answers 302 to Work, never a cached 301', async () => {
   const context = fetchSlug => ({request: new Request('https://x/en/projects?project=abc'), params: {locale: 'en'}, next: () => new Response('asset'), fetchSlug});
   for (const fetchSlug of [async () => { throw new TypeError('down'); }, async () => new Response('<h1>502</h1>', {status: 502}), async () => new Response('{bad', {status: 200}), async () => Response.json({})]) {
