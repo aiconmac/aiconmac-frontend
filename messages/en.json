@@ -20,9 +20,9 @@
     "hero": "Architectural models, built by hand in Sharjah.",
     "intro": "Architectural, masterplan and industrial models for presentations, exhibitions and design exploration.",
     "enquire": "Let’s discuss your next model.",
-    "email": "Email drawings",
+    "email": "Email",
     "call": "Call the studio",
-    "enquiryNote": "Tell us about your project, its scale and your intended presentation date.",
+    "enquiryNote": "Tell us about your project, its scale and your presentation date. Attach drawings if you have them.",
     "address": "Industrial Area 17, Sharjah, UAE",
     "loading": "Loading…",
     "retry": "Retry",
@@ -64,11 +64,47 @@
       "timeout": "The request took too long. Please try again.",
       "network": "No connection. Check your network and try again.",
       "http": "The server could not complete the request. Please try again shortly.",
-      "malformed": "The response could not be read. Please try again."
+      "malformed": "The response could not be read. Please try again.",
+      "files": "Attach up to 5 files, each under 10 MB (PDF, DWG, DXF, JPG or PNG)."
     },
     "scale": "Scale",
     "leadTime": "Lead time",
     "client": "Client",
-    "days": "{count, plural, one {# day} other {# days}}"
+    "days": "{count, plural, one {# day} other {# days}}",
+    "whatsapp": "WhatsApp",
+    "whatsappNote": "Chat with us in English",
+    "phone": "Phone",
+    "hours": "Hours",
+    "hoursValue": "Monday to Saturday, 9:00–18:00 Gulf Standard Time",
+    "directions": "Directions",
+    "addressFull": "Warehouse 4, Near Dyna Trade, Street 15, Industrial Area 17, Sharjah, UAE",
+    "careersLine": "Careers: email your CV to",
+    "form": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "category": "Project category",
+      "choose": "Choose a category",
+      "message": "Your project",
+      "drawings": "Attach drawings (optional)",
+      "drawingsHint": "Up to 5 files, 10 MB each: PDF, DWG, DXF, JPG or PNG",
+      "submit": "Send enquiry",
+      "sending": "Sending…",
+      "sent": "Thank you. Your enquiry has been sent."
+    },
+    "meta": {
+      "home": {
+        "title": "Aiconmac — Architectural models, built by hand in Sharjah",
+        "description": "Architectural, masterplan and industrial scale models for developers, architects and government. Founded 2009. Typically 4 weeks."
+      },
+      "work": {
+        "title": "Work — Aiconmac architectural models",
+        "description": "Selected architectural, masterplan and industrial models with scale, lead time and client for each project."
+      },
+      "contact": {
+        "title": "Enquire — Aiconmac",
+        "description": "Send drawings and your presentation date. Sharjah workshop, Monday to Saturday, WhatsApp in English."
+      }
+    }
   }
 }
