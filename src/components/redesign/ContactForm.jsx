@@ -35,7 +35,7 @@ export default function ContactForm({categories, projects}) {
     }
   }
   const text = state.phase === 'pending' ? t('form.sending') : state.phase === 'success' ? t('form.sent') : state.message || '';
-  return <form id="enquire-form" ref={form} className="enquire-form" onSubmit={submit}>
+  return <form id="enquire-form" ref={form} className="enquire-form" onSubmit={submit} onInput={() => { if (state.phase === 'success') setState({phase: 'idle'}); }}>
     <label>{t('form.name')}<input name="fullName" required autoComplete="name" /></label>
     <label>{t('form.email')}<input name="email" type="email" required autoComplete="email" dir="ltr" /></label>
     <label>{t('form.phone')}<input name="phone" type="tel" autoComplete="tel" dir="ltr" /></label>
@@ -43,6 +43,6 @@ export default function ContactForm({categories, projects}) {
     <label>{t('form.message')}<textarea name="message" dir="auto" required minLength={10} rows={6} /></label>
     <label>{t('form.drawings')}<input name="drawings" type="file" multiple accept={DRAWING_LIMITS.accept} /><span className="hint">{t('form.drawingsHint')}</span></label>
     <p ref={status} tabIndex={-1} role="status" aria-live="polite" className="form-status">{text}</p>
-    <button className="design-button orange" disabled={state.phase === 'pending'}>{t('form.submit')} →</button>
+    <button className="design-button orange" data-phase={state.phase} disabled={state.phase === 'pending'}>{state.phase === 'pending' ? t('form.sending') : state.phase === 'success' ? t('form.sentButton') : <>{t('form.submit')} <span className="arrow" aria-hidden="true">→</span></>}</button>
   </form>;
 }

@@ -86,6 +86,7 @@
       "submit": "Send enquiry",
       "sending": "Sending…",
       "sent": "Thank you. Your enquiry has been sent.",
+      "sentButton": "Sent",
       "about": "Project: {title}"
     },
     "heroMeta": "Managed from Sharjah, installed on site · Since 2009 · Typically 4 weeks",

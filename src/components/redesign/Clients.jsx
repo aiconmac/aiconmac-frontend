@@ -13,5 +13,5 @@ export default function Clients({ticker = false}) {
     <CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />
     {collection.data.length > 0 && <button aria-pressed={paused} onClick={() => setPaused(!paused)}>{t(paused ? 'play' : 'pause')}</button>}
   </div>;
-  return <div className="client-list"><CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />{collection.data.map((client, index) => <div className="client-row" key={client.id}><span>{String(index + 1).padStart(2, '0')}</span><span lang="en" dir="ltr">{client.name}</span><a href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} →</a></div>)}</div>;
+  return <div className="client-list"><CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />{collection.data.map((client, index) => <div className="client-row" key={client.id}><span>{String(index + 1).padStart(2, '0')}</span><span lang="en" dir="ltr">{client.name}</span><a href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} <span className="arrow" aria-hidden="true">→</span></a></div>)}</div>;
 }

@@ -7,7 +7,7 @@ const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي',
 const slug = fs.readdirSync('out/en/projects').filter(name => name.endsWith('.html')).map(name => name.slice(0, -5))[0];
 const pages = ['', '/projects', `/projects/${slug}`, '/contact'];
 const overflow = () => document.documentElement.scrollWidth <= innerWidth;
-const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .ticker-window, .thumbnails button, .detail-stage') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
+const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .home-hero, .ticker-window, .thumbnails button, .detail-stage') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
 const smallTargets = () => [...document.querySelectorAll('main button, main input, main select, main textarea, main a.design-button, header a, footer a, .filter-bar button')].filter(el => el.offsetParent !== null).map(el => [el.outerHTML.slice(0, 60), el.getBoundingClientRect().height]).filter(([, height]) => height < 44);
 
 async function mock(page, {post = () => ({status: 201, json: {id: 'x'}})} = {}) {
@@ -134,6 +134,24 @@ test('home hero: nav is transparent over the hero and solid after scrolling past
   await expect(header).toHaveCSS('background-color', 'rgb(244, 242, 237)');
 });
 
+test('reduced motion leaves the hero fully visible on load; full motion settles visible', async ({browser}) => {
+  for (const reducedMotion of ['reduce', 'no-preference']) {
+    const context = await browser.newContext({reducedMotion}); const page = await context.newPage(); await mock(page); await page.goto('/en');
+    for (const selector of ['.hero-copy h1', '.hero-copy .design-button', '.home-hero>img', '.project-tile']) await expect(page.locator(selector).first(), `${reducedMotion} ${selector}`).toHaveCSS('opacity', '1');
+    if (reducedMotion === 'reduce') expect(await page.locator('.hero-copy h1').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
+    await context.close();
+  }
+});
+
+test('gallery settles on the chosen photo with a single image on stage', async ({page}) => {
+  await mock(page); await page.goto(`/en/projects/${slug}`);
+  test.skip(await page.locator('.thumbnails button').count() < 2, 'project has one photo');
+  await page.locator('.thumbnails button').nth(1).click();
+  await expect(page.locator('.detail-stage img')).toHaveCount(1);
+  await expect(page.locator('.detail-stage img')).toHaveAttribute('src', await page.locator('.thumbnails button').nth(1).locator('img').getAttribute('src'));
+  await expect(page.locator('.detail-stage img')).toHaveCSS('opacity', '1');
+});
+
 test('detail page metadata is per project and Escape works from the thumbnails', async ({page}) => {
   await mock(page); await page.goto(`/en/projects/${slug}`);
   const title = await page.title();
@@ -181,7 +199,7 @@ test.describe('interception', () => {
     await page.goto('/en/contact');
     await page.locator('[name=fullName]').fill('Local Test'); await page.locator('[name=email]').fill('local@example.com'); await page.locator('[name=projectType]').selectOption({index: 1}); await page.locator('[name=message]').fill('Intercepted local verification only.');
     await page.locator('.enquire-form button').click();
-    await expect(page.locator('.form-status')).toHaveText(messages.en.form.sending);
+    await expect(page.locator('.form-status')).toHaveText(messages.en.form.sending); await expect(page.locator('.enquire-form button')).toHaveText(messages.en.form.sending);
     await expect(page.locator('.form-status')).toHaveText(messages.en.errors.timeout, {timeout: 15000});
     await expect(page.locator('.enquire-form button')).toBeEnabled();
   });
@@ -194,7 +212,7 @@ test('contact: empty form sends nothing and focuses the first invalid field; fil
   expect(await page.evaluate(() => document.activeElement.name)).toBe('fullName');
   await page.locator('[name=fullName]').fill('Local Test'); await page.locator('[name=email]').fill('local@example.com'); await page.locator('[name=projectType]').selectOption({index: 1}); await page.locator('[name=message]').fill('Intercepted local verification only.');
   await page.locator('.enquire-form button').click();
-  await expect(page.locator('.form-status')).toHaveText(messages.en.form.sent);
+  await expect(page.locator('.form-status')).toHaveText(messages.en.form.sent); await expect(page.locator('.enquire-form button')).toHaveText(messages.en.form.sentButton);
   expect(sent[0].type).toContain('multipart/form-data');
   expect(sent[0].body).toContain('name="projectType"');
   expect(sent[0].body).not.toContain('name="drawings"');
