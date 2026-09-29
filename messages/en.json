@@ -40,6 +40,8 @@
     "directory": "View client directory",
     "clientsIntro": "Our client directory. Get in touch to discuss your project.",
     "enquireAction": "Enquire",
+    "backToWork": "All projects",
+    "escapeHint": "Press Escape to return to all projects.",
     "selected": "Selected work",
     "explore": "Explore the complete portfolio",
     "studioIntro": "Models at every scale.",
