@@ -72,6 +72,18 @@ test('dropPending lets a retry bypass a stalled request', async () => {
   assert.equal((await second)[0].name, 'Fresh');
   resolveFirst([]);
 });
+test('a stale request settling does not evict the newer pending entry', async () => {
+  let resolveFirst; const stalled = () => new Promise(resolve => { resolveFirst = resolve; });
+  const first = loadCollection('/clients', stalled);
+  await Promise.resolve();
+  dropPending('/clients');
+  const second = loadCollection('/clients', () => new Promise(() => {}));
+  resolveFirst([]);
+  await first;
+  await Promise.resolve();
+  assert.equal(loadCollection('/clients', stalled), second);
+  dropPending('/clients');
+});
 test('language links keep path and query and swap only the locale segment', () => {
   assert.equal(localePath('/en/projects', '?category=industrial', 'ar'), '/ar/projects?category=industrial');
   assert.equal(localePath('/ar', '', 'en'), '/en');

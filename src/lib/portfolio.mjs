@@ -48,6 +48,9 @@ export function localePath(pathname, search, locale) {
 const pending = new Map();
 export function dropPending(path) { pending.delete(path); }
 export function loadCollection(path, fetchData) {
-  if (!pending.has(path)) pending.set(path, Promise.resolve().then(() => fetchData(path)).then(path.startsWith('/projects') ? normalizeProjects : normalizeClients).finally(() => pending.delete(path)));
+  if (!pending.has(path)) {
+    const promise = Promise.resolve().then(() => fetchData(path)).then(path.startsWith('/projects') ? normalizeProjects : normalizeClients).finally(() => { if (pending.get(path) === promise) pending.delete(path); });
+    pending.set(path, promise);
+  }
   return pending.get(path);
 }

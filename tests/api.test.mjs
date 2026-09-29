@@ -23,3 +23,7 @@ test('POST sends JSON with a content type and FormData untouched', async () => {
 test('poster honours a timeout option', async () => {
   await assert.rejects(poster('/contact', new FormData(), {timeout: 20, fetch: hang}), error => error instanceof ApiError && error.kind === 'timeout');
 });
+test('a body that never finishes streaming times out', async () => {
+  const stalledBody = async () => new Response(new ReadableStream({start() {}}));
+  await assert.rejects(request('/x', {timeout: 20, fetch: stalledBody}), e => e instanceof ApiError && e.kind === 'timeout');
+});
