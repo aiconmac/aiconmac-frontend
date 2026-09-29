@@ -9,12 +9,12 @@ function LinksWithQuery() {
   const params = useSearchParams();
   const locale = useLocale();
   const search = params.toString() ? `?${params}` : '';
-  return LOCALES.map(([code, label]) => <a key={code} href={localePath(pathname, search, code)} hreflang={code} lang={code} aria-current={code === locale ? 'true' : undefined}>{label}</a>);
+  return LOCALES.map(([code, label]) => <a key={code} tabIndex={0} href={localePath(pathname, search, code)} hreflang={code} lang={code} aria-current={code === locale ? 'true' : undefined}>{label}</a>);
 }
 function LinksWithoutQuery() {
   const pathname = usePathname();
   const locale = useLocale();
-  return LOCALES.map(([code, label]) => <a key={code} href={localePath(pathname, '', code)} hreflang={code} lang={code} aria-current={code === locale ? 'true' : undefined}>{label}</a>);
+  return LOCALES.map(([code, label]) => <a key={code} tabIndex={0} href={localePath(pathname, '', code)} hreflang={code} lang={code} aria-current={code === locale ? 'true' : undefined}>{label}</a>);
 }
 export default function LanguageLinks() {
   const t = useTranslations('Design');
