@@ -16,7 +16,7 @@ export default function Clients({ticker = false}) {
   </div>;
   const logos = collection.data.filter(client => typeof client.logo === 'string' && client.logo).slice(0, 8);
   return <>
-    {logos.length > 0 && <ul className="logo-strip" aria-label={t('topClients')}>{logos.map(client => <li key={client.id}><img src={imageVariant(client.logo, 320)} alt={client.name} width="160" height="80" loading="lazy" /></li>)}</ul>}
+    {(logos.length > 0 || collection.status === 'loading') && <ul className="logo-strip" aria-label={t('topClients')}>{logos.map(client => <li key={client.id}><img src={imageVariant(client.logo, 320)} alt={client.name} lang="en" width="160" height="80" loading="lazy" /></li>)}</ul>}
     <div className="client-list"><CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />{collection.data.map((client, index) => <div className="client-row" key={client.id}><span>{String(index + 1).padStart(2, '0')}</span><span {...localized(client, 'name', locale)} /><a href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} →</a></div>)}</div>
   </>;
 }
