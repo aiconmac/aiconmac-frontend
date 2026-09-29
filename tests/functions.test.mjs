@@ -36,6 +36,7 @@ test('every legacy URL has a 301 in _redirects', () => {
     ['/clients', '/en/projects#clients'], ['/en/clients', '/en/projects#clients'], ['/ar/clients', '/ar/projects#clients'],
     ['/careers', '/en/contact'], ['/en/careers', '/en/contact'], ['/ar/careers', '/ar/contact'],
     ['/loading-demo', '/en'], ['/en/loading-demo', '/en'], ['/ar/loading-demo', '/ar'],
+    ['/images/aicon-removebg-preview.png', '/images/logo.png'],
   ]) assert.deepEqual(table[from], [to, '301'], from);
   assert.ok(!('/' in table), 'root is handled by functions/index.js');
 });
