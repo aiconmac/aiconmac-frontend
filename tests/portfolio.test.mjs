@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeProjects, normalizeClients, localized, portfolioUrl, imageVariant, loadCollection, dropPending, MalformedResponse} from '../src/lib/portfolio.mjs';
+import {normalizeProjects, normalizeClients, localized, portfolioUrl, imageVariant, loadCollection, dropPending, localePath, MalformedResponse} from '../src/lib/portfolio.mjs';
 const project = (id, images = []) => ({id, title: id, category:'architectural', isPublished:true, images});
 test('published identity/order and image ownership survive normalization; image-less records remain', () => {
   const records = [project('b', [{url:'/b2.jpg',order:2,projectId:'b'}, {url:'/b1.jpg',order:1,projectId:'b'}, {url:'/other.jpg',projectId:'other'}, {url:'javascript:bad'}, null]), {...project('hidden'),isPublished:false}, project('a',null)];
@@ -52,4 +52,10 @@ test('dropPending lets a retry bypass a stalled request', async () => {
   assert.notEqual(second, first);
   assert.equal((await second)[0].name, 'Fresh');
   resolveFirst([]);
+});
+test('language links keep path and query and swap only the locale segment', () => {
+  assert.equal(localePath('/en/projects', '?category=industrial', 'ar'), '/ar/projects?category=industrial');
+  assert.equal(localePath('/ar', '', 'en'), '/en');
+  assert.equal(localePath('/en/projects/tower-one', '', 'ar'), '/ar/projects/tower-one');
+  assert.equal(localePath('/', '', 'ar'), '/ar');
 });
