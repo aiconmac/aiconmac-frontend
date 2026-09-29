@@ -10,7 +10,7 @@ import Media from './Media';
 
 function Detail({project, close}) {
   const t = useTranslations('Design');
-  const categories = useTranslations('Categories');
+  const categories = useTranslations('Design.categories');
   const locale = useLocale();
   const [requestedShot, setShot] = useState(0);
   const shot = Math.min(requestedShot, Math.max(0, project.images.length - 1));
@@ -36,7 +36,7 @@ export default function WorkProjects() {
   const params = useSearchParams();
   const locale = useLocale();
   const t = useTranslations('Design');
-  const categories = useTranslations('Categories');
+  const categories = useTranslations('Design.categories');
   const origin = useRef(null);
   const gridHeading = useRef(null);
   const previousId = useRef(null);

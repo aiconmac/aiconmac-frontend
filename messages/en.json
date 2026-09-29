@@ -61,6 +61,20 @@
     "processing": "Processing…",
     "errors": {
       "http": "The server could not complete the request. Please try again shortly."
+    },
+    "categories": {
+      "all": "All Projects",
+      "masterplan": "Masterplan",
+      "high_midrise": "High & Midrise",
+      "villa": "Villa Models",
+      "interior": "Interior Models",
+      "mechanical": "Mechanical Effect Models",
+      "conceptual": "Conceptual Models",
+      "industrial": "Industrial Models",
+      "gifts": "Gift Models",
+      "architectural": "Architectural Models",
+      "3d_printing": "3D Printing",
+      "business_gifts": "Business Gifts"
     }
   }
 }

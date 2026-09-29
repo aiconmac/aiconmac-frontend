@@ -4,7 +4,7 @@ import {localized} from '@/lib/portfolio.mjs';
 import Media from './Media';
 export default function ProjectTile({project, shot = 0, className = '', sizes, href, onClick, priority = false}) {
   const locale = useLocale();
-  const categories = useTranslations('Categories');
+  const categories = useTranslations('Design.categories');
   const key = project.category.replaceAll('-', '_');
   const category = categories.has(key) ? categories(key) : project.category;
   return <a href={href || `/${locale}/projects?project=${encodeURIComponent(project.id)}`} className={`project-tile ${className}`} onClick={onClick} data-project={project.id}>
