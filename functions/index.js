@@ -1,3 +1,4 @@
+import {secure} from './_security.js';
 const LOCALES = ['en', 'ar'];
 export function pickLocale(acceptLanguage) {
   for (const part of (acceptLanguage || '').toLowerCase().split(',')) {
@@ -8,5 +9,5 @@ export function pickLocale(acceptLanguage) {
 }
 export function onRequest({request}) {
   const location = new URL(`/${pickLocale(request.headers.get('accept-language'))}`, request.url);
-  return new Response(null, {status: 302, headers: {Location: location.toString(), Vary: 'Accept-Language'}});
+  return secure(new Response(null, {status: 302, headers: {Location: location.toString(), Vary: 'Accept-Language'}}));
 }

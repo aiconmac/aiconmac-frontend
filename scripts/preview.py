@@ -8,10 +8,17 @@ from urllib.request import urlopen
 from urllib.error import URLError
 
 ROOT = Path(__file__).resolve().parents[1] / 'out'
+# Serve the production header set so browser tests run under the real CSP.
+HEADERS = [line.strip().split(': ', 1) for line in (ROOT / '_headers').read_text().splitlines()[1:] if line.strip()]
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def end_headers(self):
+        for name, value in HEADERS:
+            self.send_header(name, value)
+        super().end_headers()
 
     def do_GET(self):
         # Only public collections are proxied, never project-by-ID or admin endpoints.

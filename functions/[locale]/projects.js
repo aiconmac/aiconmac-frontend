@@ -1,6 +1,10 @@
+import {secure} from '../_security.js';
 const LOCALES = ['en', 'ar'];
 const API = 'https://api.aiconmac.com/api';
 export async function onRequestGet(context) {
+  return secure(await route(context));
+}
+async function route(context) {
   const url = new URL(context.request.url);
   const locale = context.params.locale;
   if (!LOCALES.includes(locale)) return Response.redirect(new URL(`/en/projects${url.search}`, url).toString(), 301);

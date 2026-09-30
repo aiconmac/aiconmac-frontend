@@ -247,6 +247,21 @@ test('catalogue dialog closes with Escape while the request is pending', async (
   await expect(action).toBeFocused();
 });
 
+test('production CSP holds on every page and the catalogue dialog', async ({page}) => {
+  await page.addInitScript(() => { window.__csp = []; addEventListener('securitypolicyviolation', event => /^http:\/\/localhost:\d+\/api\//.test(event.blockedURI) || window.__csp.push(`${event.violatedDirective} ${event.blockedURI}`)); });
+  await mock(page);
+  for (const locale of ['en', 'ar']) for (const path of [...pages, '/missing-page']) {
+    const response = await page.goto(`/${locale}${path}`);
+    expect(response.headers()['content-security-policy']).toContain("frame-ancestors 'none'");
+    await page.waitForLoadState('networkidle');
+    expect(await page.evaluate(() => window.__csp), `${locale}${path}`).toEqual([]);
+  }
+  await page.goto('/en'); await page.locator('.design-footer nav>button').click();
+  await page.locator('#catalogue-email').fill('local@example.com'); await page.locator('dialog form button').click();
+  await page.waitForLoadState('networkidle');
+  expect(await page.evaluate(() => window.__csp)).toEqual([]);
+});
+
 test('CLS stays under 0.1 with a 2 s API delay', async ({page, browserName}) => {
   test.skip(browserName !== 'chromium', 'layout-shift entries are Chromium only');
   await page.route('**/api/**', async route => { await new Promise(resolve => setTimeout(resolve, 2000)); await route.fulfill({json: clients}); });

@@ -64,3 +64,22 @@ test('API failure on legacy ?project=<id> answers 302 to Work, never a cached 30
     assert.equal(response.headers.get('location'), 'https://x/en/projects');
   }
 });
+test('every Function response carries the _headers security set', async () => {
+  const {SECURITY_HEADERS} = await import('../functions/_security.js');
+  const block = fs.readFileSync('public/_headers', 'utf8').split('\n').slice(1).filter(line => line.trim()).map(line => line.trim().split(/:\s(.*)/s));
+  assert.deepEqual(Object.fromEntries(block), SECURITY_HEADERS);
+  const {onRequestGet: bareContact} = await import('../functions/contact.js');
+  const {onRequestGet: bareProjects} = await import('../functions/projects.js');
+  const context = url => ({request: new Request(url), params: {locale: new URL(url).pathname.split('/')[1]}, next: () => new Response('asset', {headers: {'content-type': 'text/html'}}), fetchSlug: async () => Response.json({slug: 'tower-one'})});
+  const responses = [
+    await onRequest({request: new Request('https://x/')}),
+    await bareContact({request: new Request('https://x/contact')}),
+    await bareProjects({request: new Request('https://x/projects')}),
+    await onRequestGet(context('https://x/en/projects')),
+    await onRequestGet(context('https://x/ar/projects?project=1')),
+    await onRequestGet(context('https://x/ru/projects')),
+  ];
+  for (const response of responses) for (const [name, value] of Object.entries(SECURITY_HEADERS)) assert.equal(response.headers.get(name), value, name);
+  assert.equal(responses[3].headers.get('content-type'), 'text/html');
+  assert.equal(await responses[3].text(), 'asset');
+});
