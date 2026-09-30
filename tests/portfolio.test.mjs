@@ -92,3 +92,10 @@ test('language links keep path and query and swap only the locale segment', () =
   assert.equal(localePath('/en/projects/tower-one', '', 'ar'), '/ar/projects/tower-one');
   assert.equal(localePath('/', '', 'ar'), '/ar');
 });
+test('slugs outside [a-z0-9-] are skipped with a warning before they reach filenames, links or redirects', t => {
+  const warn = t.mock.method(console, 'warn', () => {});
+  const hostile = ['../x', 'a/b', 'x?y', 'x#y', '%2e%2e', 'Tower', 'tower one', 'تاور'];
+  const result = normalizeProjects([project('a'), ...hostile.map((slug, i) => project(`h${i}`, [], {slug})), project('b', [], {slug: ' tower-2 '})]);
+  assert.deepEqual(result.map(p => [p.slug, p.numeral]), [['slug-a', '01'], ['tower-2', '02']]);
+  assert.equal(warn.mock.callCount(), hostile.length);
+});

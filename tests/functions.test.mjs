@@ -83,3 +83,10 @@ test('every Function response carries the _headers security set', async () => {
   assert.equal(responses[3].headers.get('content-type'), 'text/html');
   assert.equal(await responses[3].text(), 'asset');
 });
+test('a hostile API slug never reaches the redirect path', async () => {
+  for (const slug of ['../clients', '//evil.com', 'a/b', 'x?y', 'X']) {
+    const response = await onRequestGet({request: new Request('https://x/en/projects?project=1'), params: {locale: 'en'}, next: () => new Response('asset'), fetchSlug: async () => Response.json({slug})});
+    assert.equal(response.status, 302, slug);
+    assert.equal(response.headers.get('location'), 'https://x/en/projects', slug);
+  }
+});

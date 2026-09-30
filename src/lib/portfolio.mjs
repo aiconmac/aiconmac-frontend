@@ -1,4 +1,5 @@
 export class MalformedResponse extends Error {}
+const SLUG = /^[a-z0-9-]+$/;
 const text = value => typeof value === 'string' ? value.trim() : '';
 function normalizeCategory(value) {
   return value && typeof value === 'object' && text(value.slug) && text(value.name) ? {slug: value.slug.trim(), name: value.name.trim(), name_ar: text(value.name_ar) || null} : null;
@@ -6,7 +7,11 @@ function normalizeCategory(value) {
 export function normalizeProjects(data) {
   if (!Array.isArray(data) || data.some(p => !p || typeof p !== 'object' || typeof p.isPublished !== 'boolean')) throw new MalformedResponse('Expected a project collection');
   const seen = new Set();
-  return data.filter(p => p.isPublished === true).map(p => {
+  return data.filter(p => p.isPublished === true).filter(p => {
+    if (typeof p.slug !== 'string' || !p.slug.trim() || SLUG.test(p.slug.trim())) return true;
+    console.warn(`Skipping project ${p.id}: slug ${JSON.stringify(p.slug)} is not lowercase letters, digits and hyphens`);
+    return false;
+  }).map(p => {
     if (!text(p.id) || !text(p.slug) || !text(p.title) || seen.has(p.id)) throw new MalformedResponse('Invalid project identity');
     seen.add(p.id);
     const images = (Array.isArray(p.images) ? p.images : []).filter(image =>
