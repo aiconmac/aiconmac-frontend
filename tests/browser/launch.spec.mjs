@@ -134,6 +134,7 @@ test('home hero: nav is transparent over the hero and solid after scrolling past
   await page.mouse.move(700, 500); await page.mouse.wheel(0, 2000);
   await expect(header).not.toHaveAttribute('data-over-hero');
   await expect(header).toHaveCSS('background-color', 'rgb(244, 242, 237)');
+  await expect(header.locator('.brand-logo-dark')).toBeHidden();
   await expect(logo).toHaveAttribute('src', '/images/logo.png');
 });
 
@@ -173,7 +174,7 @@ test.describe('interception', () => {
       let stall = true; const held = [];
       await page.route('**/api/clients', route => stall ? held.push(route) : route.fulfill({json: clients}));
       await page.goto(`/${locale}/projects`);
-      const status = page.locator('.client-list .collection-status');
+      const status = page.locator('.client-directory .collection-status');
       await expect(status).toContainText(messages[locale].loading);
       await expect(status.getByRole('button', {name: messages[locale].retry})).toBeVisible();
       stall = false;
