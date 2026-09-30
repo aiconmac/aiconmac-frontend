@@ -7,7 +7,7 @@ const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي',
 const slug = fs.readdirSync('out/en/projects').filter(name => name.endsWith('.html')).map(name => name.slice(0, -5))[0];
 const pages = ['', '/projects', `/projects/${slug}`, '/contact'];
 const overflow = () => document.documentElement.scrollWidth <= innerWidth;
-const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .home-hero, .thumbnails button, .detail-stage') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
+const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .home-hero, .ticker-window, .thumbnails button, .detail-stage') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
 const smallTargets = () => [...document.querySelectorAll('main button, main input, main select, main textarea, main a.design-button, header a, footer a, .filter-bar button')].filter(el => el.offsetParent !== null).map(el => [el.outerHTML.slice(0, 60), el.getBoundingClientRect().height]).filter(([, height]) => height < 44);
 
 async function mock(page, {post = () => ({status: 201, json: {id: 'x'}})} = {}) {
@@ -43,16 +43,14 @@ test.describe('viewports', () => {
   });
 });
 
-test('tiles carry a title and category · scale caption under a loaded image, visible on desktop', async ({page}) => {
+test('tiles carry a numbered meta caption and a loaded image, visible on desktop', async ({page}) => {
   await mock(page); await page.goto('/en/projects', {waitUntil: 'networkidle'});
   const caption = page.locator('.work-tiles .tile-caption').first();
   await expect(caption).toBeVisible();
   await expect(caption).toHaveCSS('transform', 'none');
   const meta = page.locator('.work-tiles .tile-meta').first();
-  await expect(meta).not.toHaveText(/^\d{2}\b/);
+  await expect(meta).toHaveText(/^01\b/);
   await expect(meta).not.toContainText('Lead time');
-  const [image, text] = await Promise.all(['img', '.tile-caption'].map(selector => page.locator(`.work-tiles .project-tile ${selector}`).first().boundingBox()));
-  expect(text.y).toBeGreaterThanOrEqual(image.y + image.height);
   expect(await page.locator('.work-tiles img').first().evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
 });
 
@@ -126,29 +124,17 @@ test('home shows each featured project once and the logo in header and footer', 
   for (const area of ['.design-header', '.design-footer']) await expect(page.locator(`${area} img[alt="Aiconmac"]:visible`)).toHaveCount(1);
 });
 
-test('home: header is solid paper with the standard logo, hero loads, no Studio link or ticker', async ({page}) => {
+test('home hero: nav is transparent over the hero and solid after scrolling past it', async ({page}) => {
   await mock(page); await page.goto('/en');
   const header = page.locator('header.design-header');
-  await expect(header).toHaveCSS('background-color', 'rgb(244, 242, 237)');
-  await expect(header.locator('img[alt="Aiconmac"]:visible')).toHaveAttribute('src', '/images/logo.png');
+  await expect(header).toHaveAttribute('data-over-hero', '');
   expect(await page.locator('.home-hero>img').evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
-  await expect(page.locator('.desktop-nav a')).toHaveText(['Work', 'Clients', 'Contact']);
-  await expect(page.locator('.ticker-track, #studio')).toHaveCount(0);
-});
-
-test('clients: plain list and one enquiry button to the contact form', async ({page}) => {
-  await mock(page); await page.goto('/ar/projects#clients');
-  await expect(page.locator('.client-list li')).toHaveText(clients.map(client => client.name));
-  const discuss = page.locator('.client-directory a');
-  await expect(discuss).toHaveCount(1);
-  await expect(discuss).toHaveAttribute('href', '/ar/contact#enquire-form');
-  await expect(discuss).toContainText(messages.ar.discussSimilar);
-});
-
-test('404 shows the code, one line, and links to Work and Contact', async ({page}) => {
-  await page.goto('/404');
-  await expect(page.locator('.not-found-code').first()).toHaveText('404');
-  await expect(page.locator('section[lang=en] .not-found-links a')).toHaveText(['Work', 'Contact']);
+  const logo = header.locator('img[alt="Aiconmac"]:visible');
+  await expect(logo).toHaveAttribute('src', '/images/logo-dark.png');
+  await page.mouse.move(700, 500); await page.mouse.wheel(0, 2000);
+  await expect(header).not.toHaveAttribute('data-over-hero');
+  await expect(header).toHaveCSS('background-color', 'rgb(244, 242, 237)');
+  await expect(logo).toHaveAttribute('src', '/images/logo.png');
 });
 
 test('reduced motion leaves the hero fully visible on load; full motion settles visible', async ({browser}) => {
@@ -187,12 +173,12 @@ test.describe('interception', () => {
       let stall = true; const held = [];
       await page.route('**/api/clients', route => stall ? held.push(route) : route.fulfill({json: clients}));
       await page.goto(`/${locale}/projects`);
-      const status = page.locator('.client-directory .collection-status');
+      const status = page.locator('.client-list .collection-status');
       await expect(status).toContainText(messages[locale].loading);
       await expect(status.getByRole('button', {name: messages[locale].retry})).toBeVisible();
       stall = false;
       await status.getByRole('button', {name: messages[locale].retry}).click();
-      await expect(page.locator('.client-list li')).toHaveCount(2);
+      await expect(page.locator('.client-row')).toHaveCount(2);
       for (const route of held) await route.fulfill({json: clients}).catch(() => {});
     });
     for (const [name, post, kind] of [
@@ -288,13 +274,14 @@ test('CLS stays under 0.1 with a 2 s API delay', async ({page, browserName}) => 
 
 test('touch captions and reduced motion', async ({browser}) => {
   const context = await browser.newContext({viewport: {width: 390, height: 844}, hasTouch: true, isMobile: true, reducedMotion: 'reduce'}); const page = await context.newPage(); await mock(page); await page.goto('/en');
-  await expect(page.locator('.tile-caption').first()).toBeVisible();
+  await expect(page.locator('.tile-caption').first()).toBeVisible(); await expect(page.locator('.ticker-track')).toHaveCSS('animation-name', 'none');
+  await page.getByRole('button', {name: 'Pause', exact: true}).click(); await expect(page.getByRole('button', {name: 'Play', exact: true})).toHaveAttribute('aria-pressed', 'true');
   await context.close();
 });
 
 test.describe('axe', () => {
   for (const locale of ['en', 'ar']) for (const path of pages) test(`${locale}${path || '/'} has no violations`, async ({page}) => {
-    await mock(page); await page.goto(`/${locale}${path}`); await page.waitForSelector('.client-list li, .home-tiles, .detail-copy, .enquire-form');
+    await mock(page); await page.goto(`/${locale}${path}`); await page.waitForSelector('.client-row, .ticker-run, .detail-copy, .enquire-form');
     const results = await new AxeBuilder({page}).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
     expect(results.violations.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
   });

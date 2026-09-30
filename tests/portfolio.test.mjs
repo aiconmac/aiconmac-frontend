@@ -6,7 +6,7 @@ const project = (id, images = [], extra = {}) => ({id, slug: `slug-${id}`, title
 test('published identity/order and image ownership survive normalization; image-less records remain', () => {
   const records = [project('b', [{url:'/b2.jpg',order:2,projectId:'b'}, {url:'/b1.jpg',order:1,projectId:'b'}, {url:'/other.jpg',projectId:'other'}, {url:'javascript:bad'}, null]), {...project('hidden'),isPublished:false}, project('a',null)];
   const result = normalizeProjects(records);
-  assert.deepEqual(result.map(p => [p.id,p.slug]), [['b','slug-b'],['a','slug-a']]);
+  assert.deepEqual(result.map(p => [p.id,p.slug,p.numeral]), [['b','slug-b','01'],['a','slug-a','02']]);
   assert.deepEqual(result[0].images.map(i=>i.url), ['/b2.jpg','/b1.jpg']);
   assert.deepEqual(result[1].images, []);
   assert.deepEqual(normalizeProjects([]), []);
@@ -96,6 +96,6 @@ test('slugs outside [a-z0-9-] are skipped with a warning before they reach filen
   const warn = t.mock.method(console, 'warn', () => {});
   const hostile = ['../x', 'a/b', 'x?y', 'x#y', '%2e%2e', 'Tower', 'tower one', 'تاور'];
   const result = normalizeProjects([project('a'), ...hostile.map((slug, i) => project(`h${i}`, [], {slug})), project('b', [], {slug: ' tower-2 '})]);
-  assert.deepEqual(result.map(p => p.slug), ['slug-a', 'tower-2']);
+  assert.deepEqual(result.map(p => [p.slug, p.numeral]), [['slug-a', '01'], ['tower-2', '02']]);
   assert.equal(warn.mock.callCount(), hostile.length);
 });

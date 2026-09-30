@@ -17,6 +17,7 @@ export default async function ContactPage({params}) {
   const enquiries = Object.fromEntries(projects.map(project => [project.slug, {title: localized(project, 'title', locale).children, category: project.category?.slug}]));
   return <main id="main-content" className="design-page"><section className="contact-grid design-section">
     <div>
+      <p className="eyebrow">{t('contact')}</p>
       <h1>{t('enquire')}</h1>
       <p className="body-copy">{t('enquiryNote')}</p>
       <div className="contact-details">
