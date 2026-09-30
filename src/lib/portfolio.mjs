@@ -17,7 +17,7 @@ export function normalizeProjects(data) {
     const images = (Array.isArray(p.images) ? p.images : []).filter(image =>
       (!image?.projectId || image.projectId === p.id) && typeof image?.url === 'string' && /^(https?:\/\/|\/(?!\/))\S+$/.test(image.url.trim())
     ).map(image => ({...image, url: image.url.trim()}));
-    return {...p, slug: p.slug.trim(), category: normalizeCategory(p.category), scale: text(p.scale) || null, leadTimeDays: Number.isInteger(p.leadTimeDays) && p.leadTimeDays > 0 ? p.leadTimeDays : null, clientName: text(p.clientName) || null, images, numeral: String(seen.size).padStart(2, '0')};
+    return {...p, slug: p.slug.trim(), category: normalizeCategory(p.category), scale: text(p.scale) || null, leadTimeDays: Number.isInteger(p.leadTimeDays) && p.leadTimeDays > 0 ? p.leadTimeDays : null, clientName: text(p.clientName) || null, images};
   });
 }
 export function normalizeCategories(data) {

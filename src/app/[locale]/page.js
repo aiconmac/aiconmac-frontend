@@ -4,7 +4,6 @@ import {getProjects} from '@/lib/build-data.mjs';
 import {imageSrcSet, imageVariant} from '@/lib/portfolio.mjs';
 import Media from '@/components/redesign/Media';
 import HomeProjects from '@/components/redesign/HomeProjects';
-import Clients from '@/components/redesign/Clients';
 import Enquire from '@/components/redesign/Enquire';
 import Quotes from '@/components/redesign/Quotes';
 import {pageMetadata} from '@/lib/seo.mjs';
@@ -22,5 +21,5 @@ export default async function HomePage({params}) {
   const hero = projects.find(project => project.slug === 'dusit-thani-aqaar' && project.images.length) ?? projects.find(project => project.images.length);
   const heroUrl = hero ? (hero.images[1] ?? hero.images[0]).url : '/images/img1.jpg';
   preload(imageVariant(heroUrl, 960), {as: 'image', fetchPriority: 'high', imageSrcSet: imageSrcSet(heroUrl), imageSizes: '100vw'});
-  return <main id="main-content" className="design-page"><section className="home-hero"><Media src={heroUrl} priority sizes="100vw" /><div className="hero-copy"><h1>{t('hero')}</h1><p>{t('intro')}</p><p className="hero-facts">{t('heroMeta')}</p><a className="design-button orange" href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} <span className="arrow" aria-hidden="true">→</span></a></div></section><Clients ticker /><HomeProjects projects={projects} /><section id="studio" className="studio-grid" aria-label={t('studio')}>{[1,2,3,4].map(n => <div key={n}><h2 className="eyebrow">0{n} · {t(`studio${n}`)}</h2><p>{t(`studio${n}Text`)}</p></div>)}<p className="studio-story">{t('studioStory')}</p></section><Quotes /><Enquire locale={locale} /></main>;
+  return <main id="main-content" className="design-page"><section className="home-hero"><Media src={heroUrl} priority sizes="100vw" /><div className="hero-copy"><h1>{t('hero')}</h1><p>{t('intro')}</p><p className="hero-facts">{t('heroMeta')}</p><a className="design-button orange" href={`/${locale}/contact#enquire-form`}>{t('enquireAction')} <span className="arrow" aria-hidden="true">→</span></a></div></section><HomeProjects projects={projects} /><section className="studio design-section"><p className="studio-story">{t('studioStory')}</p><p className="studio-scope">{t('studioScope')}</p></section><Quotes /><Enquire locale={locale} /></main>;
 }

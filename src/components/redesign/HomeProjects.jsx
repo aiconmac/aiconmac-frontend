@@ -8,11 +8,11 @@ export default async function HomeProjects({projects}) {
   const lead = shown[0];
   if (!lead) return <p className="collection-status">{t('empty')}</p>;
   const description = localized(lead, 'description', locale);
-  return <section aria-label={t('selected')} className="home-tiles ruled-grid">
+  return <section aria-label={t('selected')} className="home-tiles tile-grid">
     <ProjectTile project={lead} className="lead-tile" />
-    <div className="text-tile"><span className="eyebrow">{lead.category ? <span {...localized(lead.category, 'name', locale)} /> : t('selected')}</span><h2 className="tile-headline" {...localized(lead, 'title', locale)} /><p className="body-copy" lang={description.lang} dir={description.dir}>{description.children.length > 220 ? description.children.slice(0, 217) + '…' : description.children}</p></div>
+    <div className="text-tile"><h2 className="tile-headline" {...localized(lead, 'title', locale)} /><p className="body-copy" lang={description.lang} dir={description.dir}>{description.children.length > 220 ? description.children.slice(0, 217) + '…' : description.children}</p></div>
     {shown.slice(1, 4).map(project => <ProjectTile key={project.id} project={project} />)}
-    <a className="text-tile explore" href={`/${locale}/projects`}><span className="eyebrow">{t('work')}</span><p className="tile-headline">{t('explore')} <span className="arrow" aria-hidden="true">→</span></p></a>
     {shown.slice(4).map(project => <ProjectTile className="wide-tile" key={project.id} project={project} />)}
+    <a className="text-tile explore" href={`/${locale}/projects`}><p className="tile-headline">{t('explore')} <span className="arrow" aria-hidden="true">→</span></p></a>
   </section>;
 }
