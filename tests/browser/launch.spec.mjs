@@ -248,7 +248,7 @@ test('catalogue dialog closes with Escape while the request is pending', async (
 });
 
 test('production CSP holds on every page and the catalogue dialog', async ({page}) => {
-  await page.addInitScript(() => { window.__csp = []; addEventListener('securitypolicyviolation', event => /^http:\/\/localhost:\d+\/api\//.test(event.blockedURI) || window.__csp.push(`${event.violatedDirective} ${event.blockedURI}`)); });
+  await page.addInitScript(() => { window.__csp = []; addEventListener('securitypolicyviolation', event => window.__csp.push(`${event.violatedDirective} ${event.blockedURI}`)); });
   await mock(page);
   for (const locale of ['en', 'ar']) for (const path of [...pages, '/missing-page']) {
     const response = await page.goto(`/${locale}${path}`);

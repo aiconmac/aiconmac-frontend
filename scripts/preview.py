@@ -8,8 +8,9 @@ from urllib.request import urlopen
 from urllib.error import URLError
 
 ROOT = Path(__file__).resolve().parents[1] / 'out'
-# Serve the production header set so browser tests run under the real CSP.
+# Serve the production header set so browser tests run under the real CSP, plus the local fixture API origin.
 HEADERS = [line.strip().split(': ', 1) for line in (ROOT / '_headers').read_text().splitlines()[1:] if line.strip()]
+HEADERS = [[name, value.replace('connect-src ', 'connect-src http://localhost:* ')] for name, value in HEADERS]
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
