@@ -141,8 +141,17 @@ test('home hero: nav is transparent over the hero and solid after scrolling past
 test('reduced motion leaves the hero fully visible on load; full motion settles visible', async ({browser}) => {
   for (const reducedMotion of ['reduce', 'no-preference']) {
     const context = await browser.newContext({reducedMotion}); const page = await context.newPage(); await mock(page); await page.goto('/en');
-    for (const selector of ['.hero-copy h1', '.hero-copy .design-button', '.home-hero>img', '.project-tile']) await expect(page.locator(selector).first(), `${reducedMotion} ${selector}`).toHaveCSS('opacity', '1');
-    if (reducedMotion === 'reduce') expect(await page.locator('.hero-copy h1').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
+    for (const selector of ['.hero-copy h1', '.hero-copy .design-button', '.home-hero>img']) await expect(page.locator(selector).first(), `${reducedMotion} ${selector}`).toHaveCSS('opacity', '1');
+    const tile = page.locator('.project-tile').first();
+    if (reducedMotion === 'reduce') {
+      await expect(tile).toHaveCSS('opacity', '1');
+      expect(await page.locator('.hero-copy h1').evaluate(el => getComputedStyle(el).animationName)).toBe('none');
+    } else {
+      // Tiles reveal on scroll; once fully in view they must settle opaque and untranslated.
+      await tile.evaluate(el => el.scrollIntoView({block: 'center'}));
+      await expect(tile).toHaveCSS('opacity', '1');
+      await expect(tile).toHaveCSS('transform', /none|matrix\(1, 0, 0, 1, 0, 0\)/);
+    }
     await context.close();
   }
 });
