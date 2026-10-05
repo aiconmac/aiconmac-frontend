@@ -285,8 +285,24 @@ test('CLS stays under 0.1 with a 2 s API delay', async ({page, browserName}) => 
 test('touch captions and reduced motion', async ({browser}) => {
   const context = await browser.newContext({viewport: {width: 390, height: 844}, hasTouch: true, isMobile: true, reducedMotion: 'reduce'}); const page = await context.newPage(); await mock(page); await page.goto('/en');
   await expect(page.locator('.tile-caption').first()).toBeVisible(); await expect(page.locator('.ticker-track')).toHaveCSS('animation-name', 'none');
-  await page.getByRole('button', {name: 'Pause', exact: true}).click(); await expect(page.getByRole('button', {name: 'Play', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.ticker-run img').first()).toHaveCSS('filter', 'grayscale(1)');
+  await page.getByRole('button', {name: 'Pause', exact: true}).focus(); await page.keyboard.press('Enter');
+  await expect(page.getByRole('button', {name: 'Play', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('.ticker-window').tap();
+  await expect(page.getByRole('button', {name: 'Pause', exact: true})).toHaveAttribute('aria-pressed', 'false');
   await context.close();
+});
+
+test('ticker pause button is invisible until keyboard focus, and focus pauses the band', async ({page}) => {
+  await mock(page); await page.goto('/en');
+  const button = page.locator('.client-ticker>button');
+  await expect(button).toHaveCSS('opacity', '0');
+  await expect(button).toHaveCSS('pointer-events', 'none');
+  await tabTo(page, button);
+  await expect(button).toHaveCSS('opacity', '1');
+  await expect(page.locator('.ticker-track')).toHaveCSS('animation-play-state', 'paused');
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button', {name: 'Play', exact: true})).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('ticker shows logos with client names as alt, falls back to the name, and colours a logo on hover', async ({page}) => {

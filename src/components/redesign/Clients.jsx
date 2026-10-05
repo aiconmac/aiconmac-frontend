@@ -15,7 +15,7 @@ export default function Clients({ticker = false, title, intro}) {
   const locale = useLocale();
   const [paused, setPaused] = useState(false);
   if (ticker) return <div className="client-ticker">
-    <div className={`ticker-window ${paused ? 'paused' : ''}`}><div className="ticker-track" dir="ltr" style={{'--names': collection.data.length}}>{[0, 1].map(copy => <span className="ticker-run" key={copy} aria-hidden={copy === 1 ? true : undefined}>{collection.data.map(client => <Logo client={client} key={client.id} />)}</span>)}</div></div>
+    <div className={`ticker-window ${paused ? 'paused' : ''}`} onClick={() => setPaused(!paused)}><div className="ticker-track" dir="ltr" style={{'--names': collection.data.length}}>{[0, 1].map(copy => <span className="ticker-run" key={copy} aria-hidden={copy === 1 ? true : undefined}>{collection.data.map(client => <Logo client={client} key={client.id} />)}</span>)}</div></div>
     <CollectionStatus {...collection} empty={!collection.data.length} emptyKey="emptyClients" />
     {collection.data.length > 0 && <button aria-pressed={paused} onClick={() => setPaused(!paused)}>{t(paused ? 'play' : 'pause')}</button>}
   </div>;
