@@ -42,10 +42,10 @@ export function portfolioUrl(href, changes) {
   }
   return url.pathname + url.search + url.hash;
 }
-export function imageVariant(url, width) {
-  const prefix = 'https://res.cloudinary.com/dgr0y1scl/image/upload/';
-  return url?.startsWith(prefix) ? `${prefix}f_auto,q_auto,c_limit,w_${width}/${url.slice(prefix.length)}` : url;
-}
+const CLOUDINARY = 'https://res.cloudinary.com/dgr0y1scl/image/upload/';
+const transform = (url, params) => url?.startsWith(CLOUDINARY) ? `${CLOUDINARY}${params}/${url.slice(CLOUDINARY.length)}` : url;
+export function imageVariant(url, width) { return transform(url, `f_auto,q_auto,c_limit,w_${width}`); }
+export function logoVariant(url, scale) { return transform(url, `f_auto,q_auto,c_fit,w_${88 * scale},h_${48 * scale}`); }
 export function imageSrcSet(url) {
   return imageVariant(url, 960) === url ? undefined : [480, 800, 1200, 1800, 2400].map(w => `${imageVariant(url, w)} ${w}w`).join(', ');
 }
