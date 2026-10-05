@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import fs from 'node:fs';
 
 const messages = Object.fromEntries(['en', 'ar'].map(locale => [locale, JSON.parse(fs.readFileSync(`messages/${locale}.json`, 'utf8')).Design]));
-const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي', logo: '/images/logo.png'}, {id: 'c2', name: 'Second client', logo: '/images/img1.jpg'}];
+const clients = [{id: 'c1', name: 'Actual client', name_ar: 'عميل فعلي', logo: '/images/logo.png'}, {id: 'c2', name: 'Second client', logo: '/images/missing-logo.webp'}];
 const slug = fs.readdirSync('out/en/projects').filter(name => name.endsWith('.html')).map(name => name.slice(0, -5))[0];
 const pages = ['', '/projects', `/projects/${slug}`, '/contact'];
 const overflow = () => document.documentElement.scrollWidth <= innerWidth;
@@ -287,6 +287,25 @@ test('touch captions and reduced motion', async ({browser}) => {
   await expect(page.locator('.tile-caption').first()).toBeVisible(); await expect(page.locator('.ticker-track')).toHaveCSS('animation-name', 'none');
   await page.getByRole('button', {name: 'Pause', exact: true}).click(); await expect(page.getByRole('button', {name: 'Play', exact: true})).toHaveAttribute('aria-pressed', 'true');
   await context.close();
+});
+
+test('ticker shows logos with client names as alt, falls back to the name, and colours a logo on hover', async ({page}) => {
+  await mock(page); await page.goto('/en');
+  const run = page.locator('.ticker-run').first();
+  const logo = run.locator('img');
+  await expect(logo).toHaveCount(1);
+  await expect(logo).toHaveAttribute('alt', 'Actual client');
+  await expect(logo).toHaveAttribute('width', '88');
+  await expect(logo).toHaveAttribute('height', '48');
+  await expect(run.locator('.ticker-name')).toHaveText('Second client');
+  await expect(logo).toHaveCSS('filter', 'grayscale(1)');
+  await expect(logo).toHaveCSS('mix-blend-mode', 'multiply');
+  await expect(page.locator('.ticker-track')).toHaveCSS('background-color', 'rgb(244, 242, 237)');
+  await page.locator('.ticker-window').hover({position: {x: 2, y: 2}});
+  await expect(page.locator('.ticker-track')).toHaveCSS('animation-play-state', 'paused');
+  await logo.hover();
+  await expect(logo).toHaveCSS('filter', 'none');
+  await expect(logo).toHaveCSS('opacity', '1');
 });
 
 test.describe('axe', () => {
