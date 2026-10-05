@@ -37,6 +37,7 @@ html[lang=ar] .home-hero h1,html[lang=ar] .design-section h2{line-height:1.25;le
 @media(max-width:899px){.project-detail>.detail-head,.detail-gallery,.detail-copy{grid-column:1;grid-row:auto}.work-tiles[data-count="2"] .project-tile{grid-column:span 1}}
 @media(max-width:600px){.work-tiles[data-count="1"] .tile-media{aspect-ratio:4/3}}
 .ticker-window{direction:ltr}
+@media(hover:none) and (prefers-reduced-motion:no-preference){.ticker-window{position:relative}.ticker-run img{filter:none;opacity:1}.ticker-window::before,.ticker-window::after{content:'';position:absolute;inset-block:0;z-index:1;width:calc(50% - 68px);pointer-events:none;background:rgb(244 242 237/.35);-webkit-backdrop-filter:grayscale(1);backdrop-filter:grayscale(1)}.ticker-window::before{left:0}.ticker-window::after{right:0}}
 .tile-title{font-size:20px;font-weight:400;line-height:1.2}.tile-meta{font-size:11px;letter-spacing:.04em;text-transform:uppercase}
 .work-tiles .project-tile{aspect-ratio:auto;min-height:0;display:flex;flex-direction:column;background:var(--paper)}.work-tiles .tile-media{position:relative;display:block;aspect-ratio:16/10}.filter-bar .design-button{min-height:44px}
 .detail-facts{display:grid;gap:12px;padding:16px 18px;margin:18px;border:2px solid var(--orange)}.detail-facts div{display:grid;gap:4px}.detail-facts dt{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-text)}.detail-facts dd{margin:0;font-size:20px;font-weight:700}

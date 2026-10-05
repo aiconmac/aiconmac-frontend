@@ -305,6 +305,18 @@ test('ticker pause button is invisible until keyboard focus, and focus pauses th
   await expect(page.getByRole('button', {name: 'Play', exact: true})).toHaveAttribute('aria-pressed', 'true');
 });
 
+test('phones get a centre spotlight: unfiltered logos under greyscale side panels', async ({browser, browserName}) => {
+  const context = await browser.newContext({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true}); const page = await context.newPage(); await mock(page); await page.goto('/en');
+  expect(await page.evaluate(() => CSS.supports('backdrop-filter', 'grayscale(1)') || CSS.supports('-webkit-backdrop-filter', 'grayscale(1)')), `${browserName} backdrop-filter`).toBe(true);
+  const hoverNone = await page.evaluate(() => matchMedia('(hover: none)').matches);
+  test.skip(!hoverNone && browserName !== 'chromium', `${browserName} does not emulate hover:none`);
+  expect(hoverNone).toBe(true);
+  await expect(page.locator('.ticker-run img').first()).toHaveCSS('filter', 'none');
+  const panels = await page.locator('.ticker-window').evaluate(el => ['::before', '::after'].map(p => { const s = getComputedStyle(el, p); return [s.backdropFilter || s.webkitBackdropFilter, s.pointerEvents]; }));
+  expect(panels).toEqual([['grayscale(1)', 'none'], ['grayscale(1)', 'none']]);
+  await context.close();
+});
+
 test('ticker shows logos with client names as alt, falls back to the name, and colours a logo on hover', async ({page}) => {
   await mock(page); await page.goto('/en');
   const run = page.locator('.ticker-run').first();
