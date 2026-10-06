@@ -257,6 +257,17 @@ test('contact page shows WhatsApp, hours and careers line at 320px without clipp
   expect(await page.evaluate(clipped)).toEqual([]);
 });
 
+test('hero secondary CTA opens the catalogue dialog', async ({page}) => {
+  await page.route('**/api/clients', route => route.fulfill({json: clients}));
+  for (const locale of ['en', 'ar']) {
+    await page.goto(`/${locale}`);
+    await page.locator('.hero-copy').getByRole('button', {name: messages[locale].downloadCatalogue}).click();
+    await expect(page.locator('dialog #catalogue-email')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('dialog')).toBeHidden();
+  }
+});
+
 test('catalogue dialog closes with Escape while the request is pending', async ({page}) => {
   await page.route('**/api/brochure-request', () => new Promise(() => {})); await page.route('**/api/clients', route => route.fulfill({json: clients}));
   await page.goto('/en');
