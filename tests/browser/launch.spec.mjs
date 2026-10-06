@@ -138,6 +138,17 @@ test('home hero: nav is transparent over the hero and solid after scrolling past
   await expect(logo).toHaveAttribute('src', '/images/logo.png');
 });
 
+test('hero project label sits opposite the headline, even when the Arabic title falls back to English', async ({page}) => {
+  await page.setViewportSize({width: 1440, height: 900});
+  for (const locale of ['en', 'ar']) {
+    await mock(page); await page.goto(`/${locale}`);
+    const [slab, h1] = await Promise.all([page.locator('.hero-slab').boundingBox(), page.locator('.home-hero h1').boundingBox()]);
+    const side = box => Math.sign(box.x + box.width / 2 - 720);
+    expect(side(slab), locale).toBe(locale === 'ar' ? -1 : 1);
+    expect(side(h1), locale).toBe(-side(slab));
+  }
+});
+
 test('reduced motion leaves the hero fully visible on load; full motion settles visible', async ({browser}) => {
   for (const reducedMotion of ['reduce', 'no-preference']) {
     const context = await browser.newContext({reducedMotion}); const page = await context.newPage(); await mock(page); await page.goto('/en');
