@@ -19,7 +19,7 @@ export const localBusinessJsonLd = {
   legalName: 'Alpha Micro Models',
   brand: {'@type': 'Brand', name: 'Aiconmac'},
   url: SITE,
-  logo: `${SITE}/images/logo.png`,
+  logo: `${SITE}/images/logo-full.png`,
   image: `${SITE}/og-image.jpg`,
   telephone: '+97165357585',
   email: 'marketing@aiconmac.com',
