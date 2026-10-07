@@ -299,6 +299,18 @@ test('404 language links lead to the home pages', async ({page}) => {
   expect(await page.locator('.design-header .language-links a').evaluateAll(as => as.map(a => a.getAttribute('href')))).toEqual(['/en', '/ar']);
 });
 
+test('phone hero copy, CTAs and slab clear the header and each other at 320 and 390', async ({browser}) => {
+  for (const [width, height] of [[320, 568], [390, 844]]) for (const locale of ['en', 'ar']) {
+    const page = await browser.newPage({viewport: {width, height}}); await mock(page); await page.goto(`/${locale}`); await page.evaluate(() => document.fonts.ready);
+    const [header, slab, h1, actions, hero] = await Promise.all(['.design-header', '.hero-slab', '.home-hero h1', '.home-hero .design-actions', '.home-hero'].map(s => page.locator(s).boundingBox()));
+    const at = `${locale} ${width}`;
+    expect(slab.y, at).toBeGreaterThanOrEqual(header.y + header.height);
+    expect(h1.y, at).toBeGreaterThanOrEqual(slab.y + slab.height);
+    expect(actions.y + actions.height, at).toBeLessThanOrEqual(hero.y + hero.height);
+    await page.close();
+  }
+});
+
 test('CLS stays under 0.1 with a 2 s API delay', async ({page, browserName}) => {
   test.skip(browserName !== 'chromium', 'layout-shift entries are Chromium only');
   await page.route('**/api/**', async route => { await new Promise(resolve => setTimeout(resolve, 2000)); await route.fulfill({json: clients}); });
