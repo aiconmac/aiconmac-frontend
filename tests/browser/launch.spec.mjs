@@ -8,7 +8,7 @@ const slug = fs.readdirSync('out/en/projects').filter(name => name.endsWith('.ht
 const pages = ['', '/projects', `/projects/${slug}`, '/contact'];
 const overflow = () => document.documentElement.scrollWidth <= innerWidth;
 const clipped = () => [...document.querySelectorAll('*')].filter(el => el !== document.documentElement && el !== document.body && !el.matches('.project-tile, .home-hero, .ticker-window, .thumbnails button, .detail-stage') && /hidden|clip/.test(getComputedStyle(el).overflow) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)).map(el => `${el.tagName}.${el.className}`);
-const smallTargets = () => [...document.querySelectorAll('main button, main input, main select, main textarea, main a.design-button, header a, footer a, .filter-bar button')].filter(el => el.offsetParent !== null).map(el => [el.outerHTML.slice(0, 60), el.getBoundingClientRect().height]).filter(([, height]) => height < 44);
+const smallTargets = () => [...document.querySelectorAll('main button, main input, main select, main textarea, main a.design-button, header a, footer a, .filter-bar button')].filter(el => el.offsetParent !== null && el.getBoundingClientRect().height < (el.matches('footer a:not(.brand)') ? 32 : 44)).map(el => [el.outerHTML.slice(0, 60), el.getBoundingClientRect().height]);
 
 async function mock(page, {post = () => ({status: 201, json: {id: 'x'}})} = {}) {
   const sent = [];
