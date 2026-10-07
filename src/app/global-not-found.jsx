@@ -19,7 +19,7 @@ export default function RootNotFound() {
     <link rel="preload" href="/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
     <link rel="preload" href="/fonts/noto-kufi-arabic.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
   </head><body><NextIntlClientProvider locale="en" messages={en}>
-    <SiteNavbar />
+    <SiteNavbar homeLanguageLinks />
     <main id="main-content" className="design-page">
       <Notice t={en.NotFound} lang="en" dir="ltr" />
       <Notice t={ar.NotFound} lang="ar" dir="rtl" />

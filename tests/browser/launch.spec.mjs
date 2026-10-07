@@ -294,6 +294,11 @@ test('production CSP holds on every page and the catalogue dialog', async ({page
   expect(await page.evaluate(() => window.__csp)).toEqual([]);
 });
 
+test('404 language links lead to the home pages', async ({page}) => {
+  await mock(page); await page.goto('/404'); await page.waitForLoadState('networkidle');
+  expect(await page.locator('.design-header .language-links a').evaluateAll(as => as.map(a => a.getAttribute('href')))).toEqual(['/en', '/ar']);
+});
+
 test('CLS stays under 0.1 with a 2 s API delay', async ({page, browserName}) => {
   test.skip(browserName !== 'chromium', 'layout-shift entries are Chromium only');
   await page.route('**/api/**', async route => { await new Promise(resolve => setTimeout(resolve, 2000)); await route.fulfill({json: clients}); });

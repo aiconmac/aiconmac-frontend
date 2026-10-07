@@ -16,7 +16,11 @@ function LinksWithoutQuery() {
   const locale = useLocale();
   return LOCALES.map(([code, label]) => <a key={code} tabIndex={0} href={localePath(pathname, '', code)} hreflang={code} lang={code} aria-current={code === locale ? 'true' : undefined}>{label}</a>);
 }
-export default function LanguageLinks() {
+function HomeLinks() {
+  const locale = useLocale();
+  return LOCALES.map(([code, label]) => <a key={code} tabIndex={0} href={`/${code}`} hreflang={code} lang={code} aria-current={code === locale ? 'true' : undefined}>{label}</a>);
+}
+export default function LanguageLinks({home}) {
   const t = useTranslations('Design');
-  return <nav className="language-links" aria-label={t('language')}><Suspense fallback={<LinksWithoutQuery />}><LinksWithQuery /></Suspense></nav>;
+  return <nav className="language-links" aria-label={t('language')}>{home ? <HomeLinks /> : <Suspense fallback={<LinksWithoutQuery />}><LinksWithQuery /></Suspense>}</nav>;
 }
